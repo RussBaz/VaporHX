@@ -1,12 +1,20 @@
-import XCTest
 @testable import VHX
+import XCTest
+import XCTVapor
 
 final class VHXTests: XCTestCase {
-    func testExample() throws {
-        // XCTest Documentation
-        // https://developer.apple.com/documentation/xctest
+    // Sanity test
+    func testSanity() throws {
+        let app = Application(.testing)
+        defer { app.shutdown() }
 
-        // Defining Test Cases and Test Methods
-        // https://developer.apple.com/documentation/xctest/defining_test_cases_and_test_methods
+        app.get("hello") { _ in
+            "world"
+        }
+
+        try app.testable().test(.GET, "hello") { res in
+            XCTAssertEqual(res.status, .ok)
+            XCTAssertEqual(res.body.string, "world")
+        }
     }
 }
