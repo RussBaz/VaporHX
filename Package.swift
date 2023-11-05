@@ -17,6 +17,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/vapor/vapor.git", from: "4.85.1"),
+        .package(url: "https://github.com/vapor/leaf.git", from: "4.2.4"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -24,6 +25,7 @@ let package = Package(
         .target(
             name: "VHX", dependencies: [
                 .product(name: "Vapor", package: "vapor"),
+                .product(name: "Leaf", package: "leaf"),
             ]
         ),
         .testTarget(
