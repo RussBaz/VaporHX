@@ -3,14 +3,14 @@ import Vapor
 // Code is taken from the following tutorial:
 // https://theswiftdev.com/running-and-testing-async-vapor-commands/
 
-public protocol CustomAsyncCommand: Command {
+public protocol HXAsyncCommand: Command {
     func command(
         using context: CommandContext,
         signature: Signature
     ) async throws
 }
 
-public extension CustomAsyncCommand {
+public extension HXAsyncCommand {
     func run(
         using context: CommandContext,
         signature: Signature

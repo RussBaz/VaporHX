@@ -1,11 +1,17 @@
 import Vapor
 
-public func configureHtmx(_ app: Application, template: ((_ name: String) -> String)? = nil) throws {
-    if let template {
-        app.htmx = HtmxConfiguration(template: template)
+public func configureHtmx(_ app: Application, pageTemplate template: ((_ name: String) -> String)? = nil) throws {
+    let config = if let template {
+        HtmxConfiguration(pageTemplate: template)
     } else {
-        app.htmx = HtmxConfiguration()
+        HtmxConfiguration()
     }
+
+    try configureHtmx(app, configuration: config)
+}
+
+public func configureHtmx(_ app: Application, configuration: HtmxConfiguration) throws {
+    app.htmx = configuration
 
     // Saving currnet sources in case these are the default sources
     app.leaf.sources = app.leaf.sources

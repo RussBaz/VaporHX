@@ -39,7 +39,11 @@ public struct HXLocationHeader {
     }
 
     func add(to resp: Response) {
-        resp.headers.replaceOrAdd(name: "HX-Location", value: serialise())
+        let serialised = serialise()
+
+        if !serialised.isEmpty {
+            resp.headers.replaceOrAdd(name: "HX-Location", value: serialised)
+        }
     }
 }
 

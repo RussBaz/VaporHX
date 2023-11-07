@@ -9,7 +9,11 @@ public extension HtmxConfiguration {
         pageSource = hxPageLeafSource(template: nil)
     }
 
-    init(template: @escaping (_ name: String) -> String) {
-        pageSource = hxPageLeafSource(template: template)
+    init(pagePrefix prefix: String) {
+        pageSource = hxPageLeafSource(prefix: prefix, template: nil)
+    }
+
+    init(pagePrefix prefix: String = "--page", pageTemplate template: @escaping (_ name: String) -> String) {
+        pageSource = hxPageLeafSource(prefix: prefix, template: template)
     }
 }

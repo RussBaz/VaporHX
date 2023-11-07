@@ -6,21 +6,25 @@ public struct HXReplaceUrlHeader {
         case disable
         case custom(String)
     }
-    
+
     let url: HXReplaceType
-    
+
     func serialise() -> String {
         switch url {
         case .enable:
             "true"
         case .disable:
             "false"
-        case .custom(let custom):
+        case let .custom(custom):
             "\(custom)"
         }
     }
-    
+
     func add(to resp: Response) {
-        resp.headers.replaceOrAdd(name: "HX-Replace-Url", value: serialise())
+        let serialised = serialise()
+
+        if !serialised.isEmpty {
+            resp.headers.replaceOrAdd(name: "HX-Replace-Url", value: serialised)
+        }
     }
 }
