@@ -19,6 +19,6 @@ jobs:
     - uses: actions/checkout@v4
     - uses: SwiftyLab/setup-swift@latest
     - name: Build
-      run: swift build
+      run: swift build -v
     - name: Run tests
-      run: swift test
+      run: swift test -v
