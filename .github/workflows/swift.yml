@@ -1,0 +1,24 @@
+name: Swift
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    name: Swift ${{ matrix.swift }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+      
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        swift: ["5.9"]
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: SwiftyLab/setup-swift@latest
+    - name: Build
+      run: swift build
+    - name: Run tests
+      run: swift test
