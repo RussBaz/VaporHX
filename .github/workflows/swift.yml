@@ -17,7 +17,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: SwiftyLab/setup-swift@latest
+    - uses: swift-actions/setup-swift@v1
+      with:
+        swift-version: ${{ matrix.swift }}
     - name: Build
       run: swift build
     - name: Run tests
