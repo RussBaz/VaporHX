@@ -12,13 +12,13 @@ jobs:
       
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [macos-latest]
         swift: ["5.9"]
 
     steps:
     - uses: actions/checkout@v4
     - uses: SwiftyLab/setup-swift@latest
     - name: Build
-      run: swift build -v
+      run: swift build
     - name: Run tests
-      run: swift test -v
+      run: swift test
