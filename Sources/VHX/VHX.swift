@@ -12,6 +12,7 @@ public func configureHtmx(_ app: Application, pageTemplate template: ((_ name: S
 
 public func configureHtmx(_ app: Application, configuration: HtmxConfiguration) throws {
     app.htmx = configuration
+    app.middleware.use(HXErrorMiddleware())
 
     // Saving currnet sources in case these are the default sources
     app.leaf.sources = app.leaf.sources
@@ -19,7 +20,7 @@ public func configureHtmx(_ app: Application, configuration: HtmxConfiguration) 
     try app.leaf.sources.register(source: "hx", using: app.htmx.pageSource, searchable: true)
 }
 
-public func configureLocalisation(_ app: Application, localisations: HXLocalisations) throws {
-    app.leaf.tags["t"] = HXTextTag()
+public func configureLocalisation(_ app: Application, localisations: HXLocalisations, textTag: String = "t") throws {
+    app.leaf.tags[textTag] = HXTextTag()
     app.localisations = localisations
 }
