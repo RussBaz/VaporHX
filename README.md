@@ -1,4 +1,4 @@
-# VHX - Vapor + Htmx + Extensions
+# VHX - Swift Vapor + Htmx + Extensions
 
 Work in progress.
 

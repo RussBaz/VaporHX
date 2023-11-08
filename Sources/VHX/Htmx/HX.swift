@@ -4,6 +4,7 @@ public struct HX<T: AsyncResponseEncodable & Encodable> {
     let context: T
     let template: String?
     let page: Bool?
+    let htmxHeaders: HXResponseHeaders?
 }
 
 extension HX: AsyncResponseEncodable {
