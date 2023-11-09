@@ -1,6 +1,6 @@
 import Vapor
 
-extension Request {
+public extension Request {
     var htmx: Htmx {
         .init(req: self)
     }
