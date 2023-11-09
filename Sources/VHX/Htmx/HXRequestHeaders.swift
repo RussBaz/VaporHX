@@ -1,17 +1,17 @@
 import Vapor
 
 public struct HXRequestHeaders {
-    let boosted: Bool
-    let currentUrl: String?
-    let historyRestoreRequest: Bool
-    let prompt: Bool
-    let request: Bool
-    let target: String?
-    let triggerName: String?
-    let trigger: String?
+    public let boosted: Bool
+    public let currentUrl: String?
+    public let historyRestoreRequest: Bool
+    public let prompt: Bool
+    public let request: Bool
+    public let target: String?
+    public let triggerName: String?
+    public let trigger: String?
 }
 
-extension HXRequestHeaders {
+public extension HXRequestHeaders {
     init(headers: HTTPHeaders) {
         boosted = if let restore = headers["HX-Boosted"].first { restore == "true" } else { false }
         currentUrl = headers["HX-Current-URL"].first

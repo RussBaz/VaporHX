@@ -1,17 +1,17 @@
 import Vapor
 
 public struct HXResponseHeaders {
-    var location: HXLocationHeader?
-    var pushUrl: HXPushUrlHeader?
-    var redirect: HXRedirectHeader?
-    var refresh: HXRefreshHeader?
-    var replaceUrl: HXReplaceUrlHeader?
-    var reselect: HXReselectHeader?
-    var reswap: HXReswapHeader?
-    var retarget: HXRetargetHeader?
-    var trigger: HXTriggerHeader?
-    var triggerAfterSettle: HXTriggerAfterSettleHeader?
-    var triggerAfterSwap: HXTriggerAfterSwapHeader?
+    public var location: HXLocationHeader?
+    public var pushUrl: HXPushUrlHeader?
+    public var redirect: HXRedirectHeader?
+    public var refresh: HXRefreshHeader?
+    public var replaceUrl: HXReplaceUrlHeader?
+    public var reselect: HXReselectHeader?
+    public var reswap: HXReswapHeader?
+    public var retarget: HXRetargetHeader?
+    public var trigger: HXTriggerHeader?
+    public var triggerAfterSettle: HXTriggerAfterSettleHeader?
+    public var triggerAfterSwap: HXTriggerAfterSwapHeader?
 
     public func add(to resp: Response) {
         location.map { $0.add(to: resp) }

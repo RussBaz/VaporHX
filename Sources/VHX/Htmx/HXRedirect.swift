@@ -8,9 +8,9 @@ public struct HXRedirect {
         case pushFragment
     }
 
-    let location: String
-    let htmlKind: Redirect
-    let htmxKind: Kind
+    public let location: String
+    public let htmlKind: Redirect
+    public let htmxKind: Kind
 
     init(to location: String, htmx: Kind = .pushFragment, html: Redirect = .normal) {
         if location.isEmpty {
@@ -46,8 +46,10 @@ extension HXRedirect: AsyncResponseEncodable {
             return responce
         }
     }
+}
 
-    public static func auto(from req: Request, key _: String = "next", htmx: Kind = .pushFragment, html: Redirect = .normal) -> Self {
+public extension HXRedirect {
+    static func auto(from req: Request, key _: String = "next", htmx: Kind = .pushFragment, html: Redirect = .normal) -> Self {
         let next = switch req.query["next"] ?? "/" {
         case let n where n.starts(with: "/"): n
         case let n: "/\(n)"
@@ -56,7 +58,7 @@ extension HXRedirect: AsyncResponseEncodable {
         return .init(to: next, htmx: htmx, html: html)
     }
 
-    public static func auto(to location: String, from req: Request, key: String = "next", htmx: Kind = .pushFragment, html: Redirect = .normal) -> Self {
+    static func auto(to location: String, from req: Request, key: String = "next", htmx: Kind = .pushFragment, html: Redirect = .normal) -> Self {
         let query = if let q = req.url.query { "?\(q)" } else { "" }
         let next = "\(location)?\(key)=\(req.url.path)\(query)"
 

@@ -1,7 +1,7 @@
 import Vapor
 
 public struct HtmxConfiguration {
-    let pageSource: HXLeafSource
+    public let pageSource: HXLeafSource
 }
 
 public extension HtmxConfiguration {

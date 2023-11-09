@@ -7,19 +7,19 @@ public struct HXLocationHeader {
     }
 
     public struct HXCustomLocation: Encodable {
-        let path: String
-        let target: String
-        let source: String?
-        let event: String?
-        let handler: String?
-        let swap: HXReswapHeader?
-        let values: [String]?
-        let headers: [String: String]?
+        public let path: String
+        public let target: String
+        public let source: String?
+        public let event: String?
+        public let handler: String?
+        public let swap: HXReswapHeader?
+        public let values: [String]?
+        public let headers: [String: String]?
     }
 
-    let location: HXLocationType
+    public let location: HXLocationType
 
-    func serialise() -> String {
+    public func serialise() -> String {
         switch location {
         case let .simple(simple):
             return if simple.isEmpty {
@@ -38,7 +38,7 @@ public struct HXLocationHeader {
         }
     }
 
-    func add(to resp: Response) {
+    public func add(to resp: Response) {
         let serialised = serialise()
 
         if !serialised.isEmpty {
@@ -47,7 +47,7 @@ public struct HXLocationHeader {
     }
 }
 
-extension HXLocationHeader {
+public extension HXLocationHeader {
     init(_ path: String) {
         location = .simple(path)
     }

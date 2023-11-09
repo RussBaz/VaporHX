@@ -1,13 +1,13 @@
 import Vapor
 
 public struct HXRedirectHeader {
-    let location: String
+    public let location: String
 
-    func serialise() -> String {
+    public func serialise() -> String {
         location
     }
 
-    func add(to resp: Response) {
+    public func add(to resp: Response) {
         if !location.isEmpty {
             resp.headers.replaceOrAdd(name: "HX-Redirect", value: serialise())
         }

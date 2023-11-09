@@ -22,16 +22,16 @@ public struct HXReswapHeader {
         case element(HXScrollSide)
     }
 
-    let type: HXSwapType
-    let transition: Bool
-    let swap: HXDelayModifier?
-    let settle: HXDelayModifier?
-    let ignoreTitle: Bool
-    let scroll: HXScrollModifier?
-    let show: HXScrollModifier?
-    let focusScroll: Bool
+    public let type: HXSwapType
+    public let transition: Bool
+    public let swap: HXDelayModifier?
+    public let settle: HXDelayModifier?
+    public let ignoreTitle: Bool
+    public let scroll: HXScrollModifier?
+    public let show: HXScrollModifier?
+    public let focusScroll: Bool
 
-    func serialise() -> String {
+    public func serialise() -> String {
         let transitionPart = if transition { " transition:true" } else { "" }
         let swapPart = if let swap { " swap:\(swap.serialise())" } else { "" }
         let settlePart = if let settle { " settle:\(settle.serialise())" } else { "" }
@@ -42,7 +42,7 @@ public struct HXReswapHeader {
         return "\(type)\(transitionPart)\(swapPart)\(settlePart)\(ignoreTitlePart)\(scrollPart)\(showPart)\(focusScrollPart)"
     }
 
-    func add(to resp: Response) {
+    public func add(to resp: Response) {
         resp.headers.replaceOrAdd(name: "HX-Reswap", value: serialise())
     }
 }

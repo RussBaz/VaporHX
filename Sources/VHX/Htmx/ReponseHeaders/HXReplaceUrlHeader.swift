@@ -7,9 +7,9 @@ public struct HXReplaceUrlHeader {
         case custom(String)
     }
 
-    let url: HXReplaceType
+    public let url: HXReplaceType
 
-    func serialise() -> String {
+    public func serialise() -> String {
         switch url {
         case .enable:
             "true"
@@ -20,7 +20,7 @@ public struct HXReplaceUrlHeader {
         }
     }
 
-    func add(to resp: Response) {
+    public func add(to resp: Response) {
         let serialised = serialise()
 
         if !serialised.isEmpty {
@@ -29,7 +29,7 @@ public struct HXReplaceUrlHeader {
     }
 }
 
-extension HXReplaceUrlHeader {
+public extension HXReplaceUrlHeader {
     init() {
         url = .enable
     }

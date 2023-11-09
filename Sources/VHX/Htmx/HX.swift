@@ -1,10 +1,10 @@
 import Vapor
 
 public struct HX<T: AsyncResponseEncodable & Encodable> {
-    let context: T
-    let template: String?
-    let page: Bool?
-    let htmxHeaders: HXResponseHeaders?
+    public let context: T
+    public let template: String?
+    public let page: Bool?
+    public let htmxHeaders: HXResponseHeaders?
 }
 
 extension HX: AsyncResponseEncodable {

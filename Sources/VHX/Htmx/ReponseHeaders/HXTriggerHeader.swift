@@ -11,13 +11,13 @@ public enum HXTriggerEventKind {
 }
 
 public struct HXTriggerHeader {
-    let value: HXTriggerEvent
+    public let value: HXTriggerEvent
 
-    func serialise() -> String {
+    public func serialise() -> String {
         value.serialise()
     }
 
-    func add(to resp: Response) {
+    public func add(to resp: Response) {
         let serialised = serialise()
 
         if !serialised.isEmpty {
@@ -27,13 +27,13 @@ public struct HXTriggerHeader {
 }
 
 public struct HXTriggerAfterSettleHeader {
-    let value: HXTriggerEvent
+    public let value: HXTriggerEvent
 
-    func serialise() -> String {
+    public func serialise() -> String {
         value.serialise()
     }
 
-    func add(to resp: Response) {
+    public func add(to resp: Response) {
         let serialised = serialise()
 
         if !serialised.isEmpty {
@@ -43,13 +43,13 @@ public struct HXTriggerAfterSettleHeader {
 }
 
 public struct HXTriggerAfterSwapHeader {
-    let value: HXTriggerEvent
+    public let value: HXTriggerEvent
 
-    func serialise() -> String {
+    public func serialise() -> String {
         value.serialise()
     }
 
-    func add(to resp: Response) {
+    public func add(to resp: Response) {
         let serialised = serialise()
 
         if !serialised.isEmpty {
@@ -58,7 +58,7 @@ public struct HXTriggerAfterSwapHeader {
     }
 }
 
-extension [HXTriggerEventKind] {
+public extension [HXTriggerEventKind] {
     // The solution taken from:
     // https://forums.swift.org/t/how-to-encode-objects-of-unknown-type/12253/2
     private struct AnyEncodable: Encodable {
@@ -92,7 +92,7 @@ extension [HXTriggerEventKind] {
     }
 }
 
-extension HXTriggerEvent {
+public extension HXTriggerEvent {
     func serialise() -> String {
         switch self {
         case let .basic(events):

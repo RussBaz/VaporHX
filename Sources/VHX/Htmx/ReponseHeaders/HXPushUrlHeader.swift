@@ -7,9 +7,9 @@ public struct HXPushUrlHeader {
         case custom(String)
     }
 
-    let url: HXPushType
+    public let url: HXPushType
 
-    func serialise() -> String {
+    public func serialise() -> String {
         switch url {
         case .enable:
             "true"
@@ -20,7 +20,7 @@ public struct HXPushUrlHeader {
         }
     }
 
-    func add(to resp: Response) {
+    public func add(to resp: Response) {
         let serialised = serialise()
 
         if !serialised.isEmpty {
