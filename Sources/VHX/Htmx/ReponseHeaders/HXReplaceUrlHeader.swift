@@ -28,3 +28,9 @@ public struct HXReplaceUrlHeader {
         }
     }
 }
+
+extension HXReplaceUrlHeader {
+    init() {
+        url = .enable
+    }
+}
