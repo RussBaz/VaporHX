@@ -95,6 +95,10 @@ public extension Htmx {
 
         return response
     }
+
+    func redirect(to location: String, htmx: HXRedirect.Kind = .pushFragment, html: Redirect = .normal) async throws -> Response {
+        try await HXRedirect(to: location, htmx: htmx, html: html).encodeResponse(for: req)
+    }
 }
 
 public extension Htmx {
