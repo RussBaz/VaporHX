@@ -49,13 +49,19 @@ extension HXRedirect: AsyncResponseEncodable {
 }
 
 public extension HXRedirect {
-    static func auto(from req: Request, key _: String = "next", htmx: Kind = .pushFragment, html: Redirect = .normal) -> Self {
-        let next = switch req.query["next"] ?? "/" {
+    static func auto(from req: Request, through location: String? = nil, key: String = "next", htmx: Kind = .pushFragment, html: Redirect = .normal) -> Self {
+        let next = switch req.query[key] ?? "/" {
         case let n where n.starts(with: "/"): n
         case let n: "/\(n)"
         }
+        
+        let nextUrl = if let location, !location.isEmpty {
+            "\(location)?\(key)=\(next)"
+        } else {
+            next
+        }
 
-        return .init(to: next, htmx: htmx, html: html)
+        return .init(to: nextUrl, htmx: htmx, html: html)
     }
 
     static func auto(to location: String, from req: Request, key: String = "next", htmx: Kind = .pushFragment, html: Redirect = .normal) -> Self {
