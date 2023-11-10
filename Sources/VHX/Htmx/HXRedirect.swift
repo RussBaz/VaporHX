@@ -54,7 +54,7 @@ public extension HXRedirect {
         case let n where n.starts(with: "/"): n
         case let n: "/\(n)"
         }
-        
+
         let nextUrl = if let location, !location.isEmpty {
             "\(location)?\(key)=\(next)"
         } else {

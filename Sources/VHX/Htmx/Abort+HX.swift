@@ -10,7 +10,7 @@ public extension Abort {
         return .init(abort: self, handler: using)
     }
 
-    func hx(_ using: @escaping (_ req: Request, _ abort: Abort) -> Response) async throws -> HXError {
+    func hx(_ using: @escaping (_ req: Request, _ abort: Abort) async throws -> Response) -> HXError {
         .init(abort: self, handler: using)
     }
 }

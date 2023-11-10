@@ -103,7 +103,7 @@ public extension Htmx {
     func autoRedirect(key: String = "next", htmx: HXRedirect.Kind = .pushFragment, html: Redirect = .normal) async throws -> Response {
         try await HXRedirect.auto(from: req, key: key, htmx: htmx, html: html).encodeResponse(for: req)
     }
-    
+
     func autoRedirect(through location: String, key: String = "next", htmx: HXRedirect.Kind = .pushFragment, html: Redirect = .normal) async throws -> Response {
         try await HXRedirect.auto(from: req, through: location, key: key, htmx: htmx, html: html).encodeResponse(for: req)
     }
