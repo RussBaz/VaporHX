@@ -43,6 +43,7 @@ extension HXRedirect: AsyncResponseEncodable {
                 headers.redirect = HXRedirectHeader(location: location)
                 headers.replaceUrl = HXReplaceUrlHeader()
             }
+            headers.add(to: responce)
             return responce
         }
     }
