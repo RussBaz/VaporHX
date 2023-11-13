@@ -13,3 +13,9 @@ public struct HXRetargetHeader {
         }
     }
 }
+
+public extension HXRetargetHeader {
+    init(_ value: String) {
+        self.value = value
+    }
+}

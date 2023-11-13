@@ -16,14 +16,14 @@ public struct HXLocalisations {
 
         return text
     }
+
+    public init(providers: [Locale.LanguageCode: any HXLocalisable], overrideLanguagePreference: ((_: Request) -> Locale.LanguageCode)? = nil) {
+        self.providers = providers
+        self.overrideLanguagePreference = overrideLanguagePreference
+    }
 }
 
 public extension HXLocalisations {
-    init(providers: [Locale.LanguageCode: any HXLocalisable] = [:]) {
-        self.providers = providers
-        overrideLanguagePreference = nil
-    }
-
     init() {
         providers = [:]
         overrideLanguagePreference = nil

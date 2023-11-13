@@ -11,10 +11,10 @@ public enum HXTriggerEventKind {
 }
 
 public struct HXTriggerHeader {
-    public let value: HXTriggerEvent
+    public let values: HXTriggerEvent
 
     public func serialise() -> String {
-        value.serialise()
+        values.serialise()
     }
 
     public func add(to resp: Response) {
@@ -100,5 +100,15 @@ public extension HXTriggerEvent {
         case let .custom(events):
             events.serialise()
         }
+    }
+}
+
+public extension HXTriggerHeader {
+    init(_ values: String...) {
+        self.values = .basic(values)
+    }
+
+    init(_ values: HXTriggerEventKind...) {
+        self.values = .custom(values)
     }
 }

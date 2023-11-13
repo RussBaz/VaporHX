@@ -14,6 +14,7 @@ public func configureHtmx(_ app: Application, configuration: HtmxConfiguration) 
     app.htmx = configuration
     app.middleware.use(HXErrorMiddleware())
 
+    app.views.use(.leaf)
     // Saving currnet sources in case these are the default sources
     app.leaf.sources = app.leaf.sources
 

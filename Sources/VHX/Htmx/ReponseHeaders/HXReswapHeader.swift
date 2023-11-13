@@ -76,15 +76,15 @@ public extension HXReswapHeader.HXScrollModifier {
 }
 
 public extension HXReswapHeader {
-    init(_ swapType: HXSwapType) {
-        type = swapType
-        transition = false
-        swap = nil
-        settle = nil
-        ignoreTitle = false
-        scroll = nil
-        show = nil
-        focusScroll = false
+    init(_ type: HXSwapType, transition: Bool = false, swap: HXDelayModifier? = nil, settle: HXDelayModifier? = nil, ignoreTitle: Bool = false, scroll: HXScrollModifier? = nil, show: HXScrollModifier? = nil, focusScroll: Bool = false) {
+        self.type = type
+        self.transition = transition
+        self.swap = swap
+        self.settle = settle
+        self.ignoreTitle = ignoreTitle
+        self.scroll = scroll
+        self.show = show
+        self.focusScroll = focusScroll
     }
 
     func setTransition(_ newTransition: Bool) -> Self {

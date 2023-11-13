@@ -13,3 +13,9 @@ public struct HXRedirectHeader {
         }
     }
 }
+
+public extension HXRedirectHeader {
+    init(_ url: String) {
+        location = url
+    }
+}

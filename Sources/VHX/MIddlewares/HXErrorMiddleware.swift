@@ -5,15 +5,26 @@ public struct HXErrorMiddleware: AsyncMiddleware {
         do {
             return try await next.respond(to: request)
         } catch let error as HXError {
+            let headerName = request.application.htmx.errorAttemptCountHeaderName ?? "Attempt"
             switch request.htmx.prefers {
             case .api:
-                throw error.abort
-            default:
-                let retries = UInt(request.headers["Attempt"].first ?? "") ?? 0
-                let response = try await error.handler(request, error.abort)
-                response.headers.replaceOrAdd(name: "Attempt", value: String(retries))
+                let retries = UInt(request.headers[headerName].first ?? "") ?? 0
+                var abort = error.abort
+                abort.headers.replaceOrAdd(name: headerName, value: String(retries))
+                throw abort
+            case .html:
+                let retries = UInt(request.headers[headerName].first ?? "") ?? 0
+                let response = try await error.handler(request, error.abort, false)
+                response.headers.replaceOrAdd(name: headerName, value: String(retries))
+                return response
+            case .htmx:
+                let retries = UInt(request.headers[headerName].first ?? "") ?? 0
+                let response = try await error.handler(request, error.abort, true)
+                response.headers.replaceOrAdd(name: headerName, value: String(retries))
                 return response
             }
         }
     }
+
+    public init() {}
 }

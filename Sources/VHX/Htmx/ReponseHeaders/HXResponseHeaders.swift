@@ -26,4 +26,18 @@ public struct HXResponseHeaders {
         triggerAfterSettle.map { $0.add(to: resp) }
         triggerAfterSwap.map { $0.add(to: resp) }
     }
+
+    public init(location: HXLocationHeader? = nil, pushUrl: HXPushUrlHeader? = nil, redirect: HXRedirectHeader? = nil, refresh: HXRefreshHeader? = nil, replaceUrl: HXReplaceUrlHeader? = nil, reselect: HXReselectHeader? = nil, reswap: HXReswapHeader? = nil, retarget: HXRetargetHeader? = nil, trigger: HXTriggerHeader? = nil, triggerAfterSettle: HXTriggerAfterSettleHeader? = nil, triggerAfterSwap: HXTriggerAfterSwapHeader? = nil) {
+        self.location = location
+        self.pushUrl = pushUrl
+        self.redirect = redirect
+        self.refresh = refresh
+        self.replaceUrl = replaceUrl
+        self.reselect = reselect
+        self.reswap = reswap
+        self.retarget = retarget
+        self.trigger = trigger
+        self.triggerAfterSettle = triggerAfterSettle
+        self.triggerAfterSwap = triggerAfterSwap
+    }
 }

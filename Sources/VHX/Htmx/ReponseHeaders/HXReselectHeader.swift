@@ -13,3 +13,9 @@ public struct HXReselectHeader {
         }
     }
 }
+
+public extension HXReselectHeader {
+    init(_ value: String) {
+        self.value = value
+    }
+}

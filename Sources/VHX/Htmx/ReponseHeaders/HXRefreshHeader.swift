@@ -13,3 +13,9 @@ public struct HXRefreshHeader {
         }
     }
 }
+
+public extension HXRefreshHeader {
+    init() {
+        value = true
+    }
+}

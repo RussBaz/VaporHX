@@ -2,20 +2,17 @@ import Vapor
 
 public struct HXPushUrlHeader {
     public enum HXPushType {
-        case enable
         case disable
-        case custom(String)
+        case enable(String)
     }
 
     public let url: HXPushType
 
     public func serialise() -> String {
         switch url {
-        case .enable:
-            "true"
         case .disable:
             "false"
-        case let .custom(custom):
+        case let .enable(custom):
             "\(custom)"
         }
     }
@@ -26,5 +23,15 @@ public struct HXPushUrlHeader {
         if !serialised.isEmpty {
             resp.headers.replaceOrAdd(name: "HX-Push-Url", value: serialised)
         }
+    }
+}
+
+public extension HXPushUrlHeader {
+    init(_ value: String) {
+        url = .enable(value)
+    }
+
+    static func disabled() -> Self {
+        .init(url: .disable)
     }
 }

@@ -22,4 +22,6 @@ public struct HXTextTag: LeafTag {
 
         return LeafData.string(localised)
     }
+
+    public init() {}
 }

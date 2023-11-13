@@ -12,7 +12,7 @@ public struct HXRedirect {
     public let htmlKind: Redirect
     public let htmxKind: Kind
 
-    init(to location: String, htmx: Kind = .pushFragment, html: Redirect = .normal) {
+    public init(to location: String, htmx: Kind = .pushFragment, html: Redirect = .normal) {
         if location.isEmpty {
             self.location = "/"
         } else {
@@ -36,12 +36,12 @@ extension HXRedirect: AsyncResponseEncodable {
                 headers.location = HXLocationHeader(location)
             case .rplaceFragment:
                 headers.location = HXLocationHeader(location)
-                headers.replaceUrl = HXReplaceUrlHeader()
+                headers.replaceUrl = HXReplaceUrlHeader(location)
             case .pushPage:
                 headers.redirect = HXRedirectHeader(location: location)
             case .replacePage:
                 headers.redirect = HXRedirectHeader(location: location)
-                headers.replaceUrl = HXReplaceUrlHeader()
+                headers.replaceUrl = HXReplaceUrlHeader(location)
             }
             headers.add(to: responce)
             return responce

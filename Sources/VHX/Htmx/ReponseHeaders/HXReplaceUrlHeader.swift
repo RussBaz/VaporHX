@@ -2,20 +2,17 @@ import Vapor
 
 public struct HXReplaceUrlHeader {
     public enum HXReplaceType {
-        case enable
         case disable
-        case custom(String)
+        case enable(String)
     }
 
     public let url: HXReplaceType
 
     public func serialise() -> String {
         switch url {
-        case .enable:
-            "true"
         case .disable:
             "false"
-        case let .custom(custom):
+        case let .enable(custom):
             "\(custom)"
         }
     }
@@ -30,7 +27,11 @@ public struct HXReplaceUrlHeader {
 }
 
 public extension HXReplaceUrlHeader {
-    init() {
-        url = .enable
+    init(_ location: String) {
+        url = .enable(location)
+    }
+
+    static func disabled() -> Self {
+        .init(url: .disable)
     }
 }
