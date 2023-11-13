@@ -28,6 +28,7 @@ func routes(_ app: Application) throws {
     // 'api.leaf' template must exist
     app.get("api") { req in
         MyApi(name: "name").hx(template: "api")
+        // The return type of this function call is 'HX<MyApi>'
     }
 
     // HTMX only endpoint
@@ -65,7 +66,7 @@ SPM installation:
 - Add the package to your package dependencies
 
 ```swift
-.package(url: "https://github.com/RussBaz/VHX.git", from: "0.0.7"),
+.package(url: "https://github.com/RussBaz/VHX.git", from: "0.0.8"),
 ```
 
 - Then add it to your target dependencies

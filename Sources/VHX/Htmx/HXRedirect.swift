@@ -4,7 +4,7 @@ public struct HXRedirect {
     public enum Kind {
         case replacePage
         case pushPage
-        case rplaceFragment
+        case replaceFragment
         case pushFragment
     }
 
@@ -34,7 +34,7 @@ extension HXRedirect: AsyncResponseEncodable {
             switch htmxKind {
             case .pushFragment:
                 headers.location = HXLocationHeader(location)
-            case .rplaceFragment:
+            case .replaceFragment:
                 headers.location = HXLocationHeader(location)
                 headers.replaceUrl = HXReplaceUrlHeader(location)
             case .pushPage:
