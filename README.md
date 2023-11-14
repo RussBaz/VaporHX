@@ -63,13 +63,13 @@ public func configure(_ app: Application) async throws {
 
 SPM installation:
 
-- Add the package to your package dependencies
+-   Add the package to your package dependencies
 
 ```swift
 .package(url: "https://github.com/RussBaz/VHX.git", from: "0.0.8"),
 ```
 
-- Then add it to your target dependencies
+-   Then add it to your target dependencies
 
 ```swift
 .product(name: "VHX", package: "VHX"),
@@ -77,40 +77,126 @@ SPM installation:
 
 ## Table of Contents
 
-- [What is HTMX?](#what-is-htmx)
-- [HTMX](#htmx)
-  - [Configuration](#htmx)
-  - [Htmx Request Extensions](#htmx)
-  - [HX\<MyType\>](#htmx)
-  - [Hx Extension Method](#htmx)
-  - [Request Headers](#htmx)
-  - [Response Headers](#htmx)
-    - [Overview](#htmx)
-    - [Location](#htmx)
-    - [Push Url](#htmx)
-    - [Redirect](#htmx)
-    - [Refresh](#htmx)
-    - [Replace Url](#htmx)
-    - [Reselect](#htmx)
-    - [Reswap](#htmx)
-    - [Retarget](#htmx)
-    - [Trigger, Trigger After Settle and Trigger After Swap](#htmx)
-  - [HXError, Abort and HXErrorMiddleware](#htmx)
-  - [HXRedirect](#htmx)
-- [Simple Localisation](#htmx)
-  - [Configuration](#htmx)
-  - [HXLocalisable Protocol and HXLocalisation](#htmx)
-  - [HXRequestLocalisation](#htmx)
-  - [Custom HXTextTag leaf tag](#htmx)
-- [Other Utilities](#htmx)
-  - [Date + Custom Interval](#htmx)
-  - [Request + Base Url](#htmx)
-- [Changelog](#htmx)
+-   [What is HTMX?](#what-is-htmx)
+-   [HTMX](#htmx)
+    -   [Configuration](#configuration)
+    -   [Htmx Request Extensions](#htmx)
+    -   [HX\<MyType\>](#htmx)
+    -   [Hx Extension Method](#htmx)
+    -   [Request Headers](#htmx)
+    -   [Response Headers](#htmx)
+        -   [Overview](#htmx)
+        -   [Location](#htmx)
+        -   [Push Url](#htmx)
+        -   [Redirect](#htmx)
+        -   [Refresh](#htmx)
+        -   [Replace Url](#htmx)
+        -   [Reselect](#htmx)
+        -   [Reswap](#htmx)
+        -   [Retarget](#htmx)
+        -   [Trigger, Trigger After Settle and Trigger After Swap](#htmx)
+    -   [HXError, Abort and HXErrorMiddleware](#htmx)
+    -   [HXRedirect](#htmx)
+-   [Simple Localisation](#htmx)
+    -   [Configuration](#htmx)
+    -   [HXLocalisable Protocol and HXLocalisation](#htmx)
+    -   [HXRequestLocalisation](#htmx)
+    -   [Custom HXTextTag leaf tag](#htmx)
+-   [Other Utilities](#htmx)
+    -   [Date + Custom Interval](#htmx)
+    -   [Request + Base Url](#htmx)
+    -   [HXAsyncCommand](#htmx)
+-   [Changelog](#htmx)
 
 ## What is HTMX?
 
 Here is my hot take: Make your backend code the single source of truth for your project, and drop most of your front end bloat in favour of updating your HTML in-place and seamlessly. Without reloading the page and with only your server side HTML templates. Learn more at [htmx.org](https://htmx.org/).
 
+And here is the official intro:
+
+> -   Why should only `<a>` and `<form>` be able to make HTTP requests?
+> -   Why should only `click` & `submit` events trigger them?
+> -   Why should only `GET` & `POST` methods be available?
+> -   Why should you only be able to replace the **_entire_** screen?
+>
+> By removing these **_arbitrary constraints_**, htmx completes HTML as a **_hypertext_**.
+
 ## HTMX
+
+### Configuration
+
+Assuming the standard use of `configure.swift`:
+
+```swift
+// The most straightforward configuration
+import Vapor
+import VHX
+
+// Defining the page dynamic template generator separately
+// Check the 'HXBasicLeafSource' later in this section for further details
+func pageTemplate(_ template: String) -> String {
+  """
+  #extend("index-base"): #export("body"): #extend("\(template)") #endexport #endextend
+  """
+}
+
+public func configure(_ app: Application) async throws {
+  // Other configuration
+  // HTMX configuration also enables leaf templating language
+  try configureHtmx(app, pageTemplate: pageTemplate)
+  // Later configuration and routes registration
+}
+```
+
+Here are all the signatures:
+
+```swift
+func configureHtmx(_ app: Application, pageTemplate template: ((_ name: String) -> String)? = nil) throws
+// or
+func configureHtmx(_ app: Application, configuration: HtmxConfiguration) throws
+
+// This struct stores globally available (through the Application) htmx configuration
+struct HtmxConfiguration {
+  var pageSource: HXLeafSource
+  // A header name that will be copied back from the request when HXError is thrown
+  // The header type must be UInt, otherwise 0 is returned
+  // Should be used by the client when retrying
+  var errorAttemptCountHeaderName: String?
+
+  // Possible ways to init the configuration structure
+  init()
+  init(pagePrefix prefix: String)
+  init(pagePrefix prefix: String = "--page", pageTemplate template: @escaping (_ name: String) -> String)
+  init(pageSource: HXLeafSource, errorAttemptCountHeaderName: String? = nil)
+}
+```
+
+`HXLeafSource` is used to generate a dynamic template that is used for wrapping HTMX fragments with the rest of the page content when it is accessed through a normal browser request.
+
+It satisfies the following protocol:
+
+```swift
+protocol HXLeafSource: LeafSource {
+  var pagePrefix: String { get }
+}
+```
+
+Where `LeafSource` is a special `Leaf` protocol designed for customising how leaf templates are discovered.
+
+Then **VaporHX** implements its implementation of this specialised protocol.
+
+```swift
+struct HXBasicLeafSource: HXLeafSource {
+  let pagePrefix: String
+  // This is our custom template generator
+  let pageTemplate: (_ name: String) -> String
+}
+```
+
+In our case the default `pagePrefix` value is `--page`. Therefore, everytime you ask `leaf` for a template prefixed with `--page/` (please do not miss `/` after the prefix, it is always required), the default `HXBasicLeafSource` will return a template generated by the `pageTemplate` method. Everything after the prefix with `/` will be passed into the generator and the result of it should be a valid `leaf` template.
+
+The value passed to the `pageTemplate` method must not be empty. If it is, then `HXBasicLeafSource` will return a 'not found' error.
+
+Lastly, this `LeafSource` implementation is registered as a last one and this means that the default search path is fully preserved.
 
 To be continued...
