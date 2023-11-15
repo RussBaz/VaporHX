@@ -50,7 +50,7 @@ import VHX
 // Assumes 'index-base.leaf' template exists and that it contains '#import("body")' tag
 // Generates a dynamic template that wraps the content of the specified template
 // This is the template that will be returned when a standard html GET request is made to an htmx endpoint.
-// The default implementation returns '#extend("\(name)")'
+// The default implementation simply returns '#extend("\(name)")'
 func pageTemplate(_ template: String) -> String {
     """
     #extend("index-base"): #export("body"): #extend("\(template)") #endexport #endextend
@@ -68,9 +68,8 @@ public func configure(_ app: Application) async throws {
 - [HTMX](#htmx)
   - [Installation](#installation)
   - [Configuration](#configuration)
-  - [HTMX Request Extensions](#htmx-request-extensions)
-  - [HX\<MyType\>](#htmx)
-  - [Hx Extension Method](#htmx)
+  - [HX Request Extensions](#hx-request-extensions)
+  - [HX Extension Method and HX\<MyType\>](#htmx)
   - [Request Headers](#htmx)
   - [Response Headers](#htmx)
     - [Overview](#htmx)
@@ -120,7 +119,7 @@ SPM installation:
 - Add the package to your package dependencies
 
 ```swift
-.package(url: "https://github.com/RussBaz/VaporHX.git", from: "0.0.8"),
+.package(url: "https://github.com/RussBaz/VaporHX.git", from: "0.0.9"),
 ```
 
 - Then add it to your target dependencies
@@ -160,6 +159,8 @@ Here are all the signatures:
 func configureHtmx(_ app: Application, pageTemplate template: ((_ name: String) -> String)? = nil) throws
 // or
 func configureHtmx(_ app: Application, configuration: HtmxConfiguration) throws
+
+// -------------------------------------------- //
 
 // This struct stores globally available (through the Application) htmx configuration
 struct HtmxConfiguration {
@@ -211,6 +212,72 @@ The value passed to the `pageTemplate` method must not be empty. If it is, then 
 
 Lastly, this `LeafSource` implementation is registered as a last leaf source, and this means that the default search path is fully preserved.
 
-### HTMX Request Extensions
+### HX Request Extensions
+
+How to check if the incoming request is an HTMX request?
+
+```swift
+// Check this extensions property on the 'Request' object
+req.htmx.prefered // Bool
+// And if you want more more accuracy ...
+req.htmx.prefers // Preference
+
+// -------------------------------------------- //
+
+// HTMX case implies an HTMX fragment
+// HTML case implies standard browser request
+// API case implies json api request
+enum Preference {
+  case htmx, html, api
+}
+```
+
+How to automatically decide if you need to render an HTMX fragment or a full page?
+
+```swift
+// Try this method on the 'req.htmx' extension
+// This method tries to mimic the 'req.view.render' api
+// but it also can accept optional HXResponseHeaders
+func render(_ name: String, _ context: some Encodable, page: Bool? = nil, headers: HXResponseHeaders? = nil) async throws -> Response
+
+func render(_ name: String, page: Bool? = nil, headers: HXResponseHeaders? = nil) async throws -> Response
+```
+
+To learn more about the `HXResponseHeaders`, please refere to the Response Headers section.
+
+How to redirect quickly with proper HTMX headers?
+
+```swift
+// The simplest type of redirect
+func redirect(to location: String, htmx: HXRedirect.Kind = .pushFragment, html: Redirect = .normal) async throws -> Response
+
+// A helper that looks for a query parameter by the 'key' value and redirects to it
+func autoRedirect(key: String = "next", htmx: HXRedirect.Kind = .pushFragment, html: Redirect = .normal) async throws -> Response
+
+// A helper that looks for a query parameter by the 'key' value
+// And then redirects to a 'through location' while preserving the query parameter from the first step during the redirect
+// e.g. it can redirect from '/redirect?next=/dashboard' to '/login?next=/dashboard'
+// by making 'through' equal to '/login'
+func autoRedirect(through location: String, key: String = "next", htmx: HXRedirect.Kind = .pushFragment, html: Redirect = .normal) async throws -> Response
+
+// A helper that redirects to 'from location' while adding the current url as query parameter with a name specified by the 'key'
+// It preserves query parameteres from the original url
+// e.g from /dashboard to /login?next=/dashboard
+// by making 'from' equal to '/login'
+func autoRedirectBack(from location: String, key: String = "next", htmx: HXRedirect.Kind = .pushFragment, html: Redirect = .normal) async throws -> Response
+
+// -------------------------------------------- //
+
+// HXRedirect.Kind
+enum Kind {
+  case replacePage
+  case pushPage
+  case replaceFragment
+  case pushFragment
+}
+
+// What is a 'Redirect' type?
+// It is simply the default 'Vapor' type which you use with the 'req.redirect'
+```
 
 To be continued...

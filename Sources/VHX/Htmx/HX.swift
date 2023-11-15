@@ -19,7 +19,7 @@ extension HX: AsyncResponseEncodable {
         switch request.htmx.prefers {
         case .api: try await context.encodeResponse(for: request)
         case .htmx: if let template {
-                try await request.htmx.render(template, context, page: page ?? false)
+                try await request.htmx.render(template, context, page: page ?? false, headers: htmxHeaders)
             } else {
                 Response(status: .noContent)
             }
