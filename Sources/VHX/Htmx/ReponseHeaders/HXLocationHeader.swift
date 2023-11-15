@@ -1,6 +1,6 @@
 import Vapor
 
-public struct HXLocationHeader {
+public struct HXLocationHeader: HXResponseHeaderAddable {
     public enum HXLocationType {
         case simple(String)
         case custom(HXCustomLocation)

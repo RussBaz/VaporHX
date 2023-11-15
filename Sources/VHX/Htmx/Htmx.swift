@@ -60,7 +60,7 @@ public extension Htmx {
 }
 
 public extension Htmx {
-    func render(_ name: String, _ context: some Encodable, page: Bool? = nil, headers: HXResponseHeaders? = nil) async throws -> Response {
+    func render(_ name: String, _ context: some Encodable, page: Bool? = nil, headers: HXResponseHeaderAddable? = nil) async throws -> Response {
         let page = page ?? (req.method == .GET && !req.headers.htmx.request)
 
         let view = if page {
@@ -78,7 +78,7 @@ public extension Htmx {
         return response
     }
 
-    func render(_ name: String, page: Bool? = nil, headers: HXResponseHeaders? = nil) async throws -> Response {
+    func render(_ name: String, page: Bool? = nil, headers: HXResponseHeaderAddable? = nil) async throws -> Response {
         let page = page ?? (req.method == .GET && !req.headers.htmx.request)
 
         let view = if page {

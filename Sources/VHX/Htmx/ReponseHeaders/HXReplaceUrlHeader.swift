@@ -1,6 +1,6 @@
 import Vapor
 
-public struct HXReplaceUrlHeader {
+public struct HXReplaceUrlHeader: HXResponseHeaderAddable {
     public enum HXReplaceType {
         case disable
         case enable(String)

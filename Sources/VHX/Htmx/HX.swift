@@ -21,7 +21,11 @@ extension HX: AsyncResponseEncodable {
         case .htmx: if let template {
                 try await request.htmx.render(template, context, page: page ?? false, headers: htmxHeaders)
             } else {
-                Response(status: .noContent)
+                if let htmxHeaders {
+                    Response(status: .noContent).add(headers: htmxHeaders)
+                } else {
+                    Response(status: .noContent)
+                }
             }
         case .html: if let template {
                 try await request.htmx.render(template, context, page: page ?? true)

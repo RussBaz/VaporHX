@@ -1,6 +1,6 @@
 import Vapor
 
-public struct HXReswapHeader {
+public struct HXReswapHeader: HXResponseHeaderAddable {
     public enum HXSwapType: String, RawRepresentable {
         case innerHTML, outerHTML, beforebegin, afterbegin, beforeend, afterend, delete, none
     }

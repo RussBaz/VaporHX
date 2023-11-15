@@ -1,6 +1,6 @@
 import Vapor
 
-public struct HXRedirectHeader {
+public struct HXRedirectHeader: HXResponseHeaderAddable {
     public let location: String
 
     public func serialise() -> String {

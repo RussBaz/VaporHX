@@ -1,6 +1,6 @@
 import Vapor
 
-public struct HXRefreshHeader {
+public struct HXRefreshHeader: HXResponseHeaderAddable {
     public let value: Bool
 
     public func serialise() -> String {

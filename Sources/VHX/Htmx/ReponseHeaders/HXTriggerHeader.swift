@@ -10,7 +10,7 @@ public enum HXTriggerEventKind {
     case object(name: String, value: any Encodable)
 }
 
-public struct HXTriggerHeader {
+public struct HXTriggerHeader: HXResponseHeaderAddable {
     public let values: HXTriggerEvent
 
     public func serialise() -> String {
@@ -26,7 +26,7 @@ public struct HXTriggerHeader {
     }
 }
 
-public struct HXTriggerAfterSettleHeader {
+public struct HXTriggerAfterSettleHeader: HXResponseHeaderAddable {
     public let value: HXTriggerEvent
 
     public func serialise() -> String {
@@ -42,7 +42,7 @@ public struct HXTriggerAfterSettleHeader {
     }
 }
 
-public struct HXTriggerAfterSwapHeader {
+public struct HXTriggerAfterSwapHeader: HXResponseHeaderAddable {
     public let value: HXTriggerEvent
 
     public func serialise() -> String {

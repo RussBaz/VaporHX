@@ -1,6 +1,6 @@
 import Vapor
 
-public struct HXPushUrlHeader {
+public struct HXPushUrlHeader: HXResponseHeaderAddable {
     public enum HXPushType {
         case disable
         case enable(String)

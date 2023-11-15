@@ -1,6 +1,6 @@
 import Vapor
 
-public struct HXReselectHeader {
+public struct HXReselectHeader: HXResponseHeaderAddable {
     public let value: String
 
     public func serialise() -> String {
