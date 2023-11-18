@@ -69,7 +69,7 @@ public func configure(_ app: Application) async throws {
   - [Installation](#installation)
   - [Configuration](#configuration)
   - [HX Request Extensions](#hx-request-extensions)
-  - [HX Extension Method and HX\<MyType\>](#htmx)
+  - [HX Extension Method and HX\<MyType\>](#hx-extension-method-and-hxmytype)
   - [Request Headers](#htmx)
   - [Response Headers](#htmx)
     - [Overview](#htmx)
@@ -249,35 +249,54 @@ How to redirect quickly with proper HTMX headers?
 
 ```swift
 // The simplest type of redirect
-func redirect(to location: String, htmx: HXRedirect.Kind = .pushFragment, html: Redirect = .normal) async throws -> Response
+func redirect(to location: String, htmx: HXRedirect.Kind = .redirect, html: Redirect = .normal, refresh: Bool = false) async throws -> Response
 
 // A helper that looks for a query parameter by the 'key' value and redirects to it
-func autoRedirect(key: String = "next", htmx: HXRedirect.Kind = .pushFragment, html: Redirect = .normal) async throws -> Response
+func autoRedirect(key: String = "next", htmx: HXRedirect.Kind = .redirect, html: Redirect = .normal, refresh: Bool = false) async throws -> Response
 
 // A helper that looks for a query parameter by the 'key' value
 // And then redirects to a 'through location' while preserving the query parameter from the first step during the redirect
-// e.g. it can redirect from '/redirect?next=/dashboard' to '/login?next=/dashboard'
+// e.g. it can redirect from '/redirect?next=/dashboard/' to '/login?next=/dashboard/'
 // by making 'through' equal to '/login'
-func autoRedirect(through location: String, key: String = "next", htmx: HXRedirect.Kind = .pushFragment, html: Redirect = .normal) async throws -> Response
+func autoRedirect(through location: String, key: String = "next", htmx: HXRedirect.Kind = .redirect, html: Redirect = .normal, refresh: Bool = false) async throws -> Response
 
 // A helper that redirects to 'from location' while adding the current url as query parameter with a name specified by the 'key'
 // It preserves query parameteres from the original url
-// e.g from /dashboard to /login?next=/dashboard
+// e.g from /dashboard/ to /login?next=/dashboard/
 // by making 'from' equal to '/login'
-func autoRedirectBack(from location: String, key: String = "next", htmx: HXRedirect.Kind = .pushFragment, html: Redirect = .normal) async throws -> Response
+func autoRedirectBack(from location: String, key: String = "next", htmx: HXRedirect.Kind = .redirect, html: Redirect = .normal, refresh: Bool = false) async throws -> Response
 
 // -------------------------------------------- //
 
 // HXRedirect.Kind
 enum Kind {
-  case replacePage
-  case pushPage
-  case replaceFragment
-  case pushFragment
+  case redirect
+  case redirectAndPush
+  case redirectAndReplace
 }
 
 // What is a 'Redirect' type?
 // It is simply the default 'Vapor' type which you use with the 'req.redirect'
+```
+
+### HX Extension Method and HX\<MyType\>
+
+The inbuilt `Content` type was extended with an `hx()` method. This is the secret ingredient that adds automatic HTMX support to the standard responses. In addition, some other types have been extended, such as `HTTPStatus` and `Abort`.
+
+Here is how it works:
+
+```swift
+// This is a slightly simplified version of this extension method declaration
+extension Content where Self: AsyncResponseEncodable & Encodable {
+  func hx(template name: String? = nil, page: Bool? = nil, headers: HXResponseHeaders? = nil) -> HX<Self>
+}
+
+// And this is how you would use it
+app.get("api") { req in
+// Where 'MyApi' is some Content
+  MyApi(name: "name").hx(template: "api")
+  // The return type of this function call is 'HX<MyApi>'
+}
 ```
 
 To be continued...

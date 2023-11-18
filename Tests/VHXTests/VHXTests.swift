@@ -16,10 +16,18 @@ final class VHXTests: XCTestCase {
             "world"
         }
 
+        app.post("echo") { _ in
+            HTTPStatus.ok
+        }
+
         app.get("ok") { req in
             let response = try await HTTPStatus.ok.hx().encodeResponse(for: req)
             response.headers.add(name: "R", value: "\(req.htmx.headers.request)")
             return response
+        }
+
+        app.post("redirect", "back") { req in
+            try await req.htmx.autoRedirectBack(from: "/ok", htmx: .redirectAndPush, html: .temporary)
         }
 
         try app.testable().test(.GET, "hello") { res in
@@ -47,6 +55,14 @@ final class VHXTests: XCTestCase {
         }, afterResponse: { res in
             XCTAssertEqual(res.status, .noContent)
             XCTAssertEqual(res.headers["R"].first, "true")
+        })
+
+        try app.testable().test(.POST, "redirect/back/", beforeRequest: { req in
+            req.headers.replaceOrAdd(name: .accept, value: HTTPMediaType.html.serialize())
+            req.headers.replaceOrAdd(name: "HX-Request", value: "true")
+        }, afterResponse: { res in
+            XCTAssertEqual(res.status, .temporaryRedirect)
+            XCTAssertEqual(res.headers["HX-Push-Url"].first, "/ok?next=/redirect/back/")
         })
     }
 }
