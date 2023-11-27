@@ -119,7 +119,7 @@ SPM installation:
 - Add the package to your package dependencies
 
 ```swift
-.package(url: "https://github.com/RussBaz/VaporHX.git", from: "0.0.9"),
+.package(url: "https://github.com/RussBaz/VaporHX.git", from: "0.0.11"),
 ```
 
 - Then add it to your target dependencies
@@ -238,6 +238,7 @@ How to automatically decide if you need to render an HTMX fragment or a full pag
 // Try this method on the 'req.htmx' extension
 // This method tries to mimic the 'req.view.render' api
 // but it also can accept optional HXResponseHeaders
+// Setting the 'page' parameter will force to always return a full page or a page fragment only
 func render(_ name: String, _ context: some Encodable, page: Bool? = nil, headers: HXResponseHeaders? = nil) async throws -> Response
 
 func render(_ name: String, page: Bool? = nil, headers: HXResponseHeaders? = nil) async throws -> Response
@@ -296,6 +297,17 @@ app.get("api") { req in
 // Where 'MyApi' is some Content
   MyApi(name: "name").hx(template: "api")
   // The return type of this function call is 'HX<MyApi>'
+}
+```
+
+One should not normally deal with the `HX` struct directly but in case it is ever needed, here is its definition:
+
+```swift
+struct HX<T: AsyncResponseEncodable & Encodable> {
+  let context: T
+  let template: String?
+  let page: Bool?
+  let htmxHeaders: HXResponseHeaders?
 }
 ```
 

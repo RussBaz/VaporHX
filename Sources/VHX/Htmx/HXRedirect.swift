@@ -57,10 +57,7 @@ extension HXRedirect: AsyncResponseEncodable {
 
 public extension HXRedirect {
     static func auto(from req: Request, through location: String? = nil, key: String = "next", htmx: Kind = .redirect, html: Redirect = .normal, refresh: Bool = false) -> Self {
-        let next = switch req.query[key] ?? "/" {
-        case let n where n.starts(with: "/"): n
-        case let n: "/\(n)"
-        }
+        let next = HXRedirect.next(from: req, key: key)
 
         let nextUrl = if let location, !location.isEmpty {
             "\(location)?\(key)=\(next)"
@@ -76,5 +73,12 @@ public extension HXRedirect {
         let next = "\(location)?\(key)=\(req.url.path)\(query)"
 
         return .init(to: next, htmx: htmx, html: html, refresh: refresh)
+    }
+
+    static func next(from req: Request, key: String = "next") -> String {
+        switch req.query[key] ?? "/" {
+        case let n where n.starts(with: "/"): n
+        case let n: "/\(n)"
+        }
     }
 }
