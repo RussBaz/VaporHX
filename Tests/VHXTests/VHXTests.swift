@@ -1,3 +1,4 @@
+import LeafKit
 @testable import VHX
 import XCTest
 import XCTVapor
@@ -8,7 +9,14 @@ final class VHXTests: XCTestCase {
         let app = Application(.testing)
         defer { app.shutdown() }
 
-        app.views.use(.leaf)
+        let pathToViews = URL(fileURLWithPath: #filePath).deletingLastPathComponent().appendingPathComponent("Views").relativePath
+
+        app.leaf.sources = LeafSources.singleSource(
+            NIOLeafFiles(fileio: app.fileio,
+                         limits: .default,
+                         sandboxDirectory: pathToViews,
+                         viewDirectory: pathToViews))
+
         try configureHtmx(app)
         try configureLocalisation(app, localisations: HXLocalisations())
 
@@ -29,6 +37,8 @@ final class VHXTests: XCTestCase {
         app.post("redirect", "back") { req in
             try await req.htmx.autoRedirectBack(from: "/ok", htmx: .redirectAndPush, html: .temporary)
         }
+
+        app.get("view", use: staticRoute(template: "test-view"))
 
         try app.testable().test(.GET, "hello") { res in
             XCTAssertEqual(res.status, .ok)
@@ -64,5 +74,10 @@ final class VHXTests: XCTestCase {
             XCTAssertEqual(res.status, .temporaryRedirect)
             XCTAssertEqual(res.headers["HX-Push-Url"].first, "/ok?next=/redirect/back/")
         })
+
+        try app.testable().test(.GET, "view") { res in
+            XCTAssertEqual(res.status, .ok)
+            XCTAssertEqual(res.body.string, "<p>Hello World</p>\n")
+        }
     }
 }

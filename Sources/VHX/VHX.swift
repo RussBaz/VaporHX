@@ -25,3 +25,9 @@ public func configureLocalisation(_ app: Application, localisations: HXLocalisat
     app.leaf.tags[textTag] = HXTextTag()
     app.localisations = localisations
 }
+
+public func staticRoute(template: String) -> ((Request) async throws -> Response) {
+    { (req: Request) async throws in
+        try await req.htmx.render(template)
+    }
+}
