@@ -67,37 +67,37 @@ public func configure(_ app: Application) async throws {
 
 ## Table of Contents
 
--   [What is HTMX?](#what-is-htmx)
--   [HTMX](#htmx)
-    -   [Installation](#installation)
-    -   [Configuration](#configuration)
-    -   [HX Request Extensions](#hx-request-extensions)
-    -   [HX Extension Method and HX\<MyType\>](#hx-extension-method-and-hxmytype)
-    -   [Request Headers](#htmx)
-    -   [Response Headers](#htmx)
-        -   [Overview](#htmx)
-        -   [Location](#htmx)
-        -   [Push Url](#htmx)
-        -   [Redirect](#htmx)
-        -   [Refresh](#htmx)
-        -   [Replace Url](#htmx)
-        -   [Reselect](#htmx)
-        -   [Reswap](#htmx)
-        -   [Retarget](#htmx)
-        -   [Trigger, Trigger After Settle and Trigger After Swap](#htmx)
-    -   [HXError, Abort and HXErrorMiddleware](#htmx)
-    -   [HXRedirect](#htmx)
--   [Simple Localisation](#htmx)
-    -   [Configuration](#htmx)
-    -   [HXLocalisable Protocol and HXLocalisation](#htmx)
-    -   [HXRequestLocalisation](#htmx)
-    -   [Custom HXTextTag Leaf Tag](#htmx)
--   [Other Utilities](#htmx)
-    -   [Date + Custom Interval](#htmx)
-    -   [Request + Base Url](#htmx)
-    -   [HXAsyncCommand](#htmx)
-    -   [staticRoute Helper](#htmx)
--   [Changelog](#htmx)
+- [What is HTMX?](#what-is-htmx)
+- [HTMX](#htmx)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
+  - [HX Request Extensions](#hx-request-extensions)
+  - [HX Extension Method and HX\<MyType\>](#hx-extension-method-and-hxmytype)
+  - [Request Headers](#request-headers)
+  - [Response Headers](#response-headers)
+    - [Overview](#htmx)
+    - [Location](#htmx)
+    - [Push Url](#htmx)
+    - [Redirect](#htmx)
+    - [Refresh](#htmx)
+    - [Replace Url](#htmx)
+    - [Reselect](#htmx)
+    - [Reswap](#htmx)
+    - [Retarget](#htmx)
+    - [Trigger, Trigger After Settle and Trigger After Swap](#htmx)
+  - [HXError, Abort and HXErrorMiddleware](#htmx)
+  - [HXRedirect](#htmx)
+- [Simple Localisation](#htmx)
+  - [Configuration](#htmx)
+  - [HXLocalisable Protocol and HXLocalisation](#htmx)
+  - [HXRequestLocalisation](#htmx)
+  - [Custom HXTextTag Leaf Tag](#htmx)
+- [Other Utilities](#htmx)
+  - [Date + Custom Interval](#htmx)
+  - [Request + Base Url](#htmx)
+  - [HXAsyncCommand](#htmx)
+  - [staticRoute Helper](#htmx)
+- [Changelog](#htmx)
 
 ## What is HTMX?
 
@@ -105,10 +105,10 @@ Here is my hot take: Make your backend code the single source of truth for your 
 
 And here is the official intro:
 
-> -   Why should only `<a>` and `<form>` be able to make HTTP requests?
-> -   Why should only `click` & `submit` events trigger them?
-> -   Why should only `GET` & `POST` methods be available?
-> -   Why should you only be able to replace the **_entire_** screen?
+> - Why should only `<a>` and `<form>` be able to make HTTP requests?
+> - Why should only `click` & `submit` events trigger them?
+> - Why should only `GET` & `POST` methods be available?
+> - Why should you only be able to replace the **_entire_** screen?
 >
 > By removing these **_arbitrary constraints_**, htmx completes HTML as a **_hypertext_**.
 
@@ -120,13 +120,13 @@ Lastly, here is a quick introduction to HTMX by `Fireship`: [htmx in 100 seconds
 
 SPM installation:
 
--   Add the package to your package dependencies
+- Add the package to your package dependencies
 
 ```swift
-.package(url: "https://github.com/RussBaz/VaporHX.git", from: "0.0.12"),
+.package(url: "https://github.com/RussBaz/VaporHX.git", from: "0.0.13"),
 ```
 
--   Then add it to your target dependencies
+- Then add it to your target dependencies
 
 ```swift
 .product(name: "VHX", package: "VaporHX"),
@@ -314,5 +314,27 @@ struct HX<T: AsyncResponseEncodable & Encodable> {
   let htmxHeaders: HXResponseHeaders?
 }
 ```
+
+### Request Headers
+
+```swift
+// 'HTMX' request header getter on every request
+req.htmx.headers
+
+// Request header structure
+// For the meaning of value of each header, please refer to the 'HTMX' docs
+struct HXRequestHeaders {
+  let boosted: Bool
+  let currentUrl: String?
+  let historyRestoreRequest: Bool
+  let prompt: Bool
+  let request: Bool
+  let target: String?
+  let triggerName: String?
+  let trigger: String?
+}
+```
+
+### Response Headers
 
 To be continued...

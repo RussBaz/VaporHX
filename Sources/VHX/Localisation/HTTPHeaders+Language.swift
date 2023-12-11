@@ -305,7 +305,7 @@ private extension Substring {
 }
 
 public extension HTTPHeaders {
-    var language: HXLanguageHeader {
-        HXLanguageHeader.parse(directives: parseDirectives(name: .acceptLanguage))
+    func language(fallback lang: Locale.LanguageCode) -> HXLanguageHeader {
+        HXLanguageHeader.parse(directives: parseDirectives(name: .acceptLanguage), lang: lang)
     }
 }

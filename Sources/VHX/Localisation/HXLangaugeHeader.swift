@@ -21,13 +21,14 @@ public struct HXLanguageHeader {
     }
 
     public let preferences: [Preference]
+    public let defautLanguageCode: Locale.LanguageCode
 
-    static func parse(directives: [[HTTPHeaders.Directive]]) -> HXLanguageHeader {
-        .init(preferences: directives.compactMap(Preference.parse).sorted())
+    static func parse(directives: [[HTTPHeaders.Directive]], lang: Locale.LanguageCode) -> HXLanguageHeader {
+        .init(preferences: directives.compactMap(Preference.parse).sorted(), defautLanguageCode: lang)
     }
 
     public var prefered: Locale.LanguageCode {
-        preferences.last?.value ?? Locale.current.language.languageCode ?? Locale.LanguageCode(stringLiteral: "en")
+        preferences.last?.value ?? defautLanguageCode
     }
 }
 

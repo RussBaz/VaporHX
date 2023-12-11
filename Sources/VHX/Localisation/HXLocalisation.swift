@@ -2,6 +2,7 @@ import Vapor
 
 public struct HXLocalisations {
     public let providers: [Locale.LanguageCode: any HXLocalisable]
+    public let defaultLanguageCode: Locale.LanguageCode
     public let overrideLanguagePreference: ((_ req: Request) -> Locale.LanguageCode)?
 
     public func localise(text: String, for code: Locale.LanguageCode) -> String {
@@ -17,9 +18,10 @@ public struct HXLocalisations {
         return text
     }
 
-    public init(providers: [Locale.LanguageCode: any HXLocalisable], overrideLanguagePreference: ((_: Request) -> Locale.LanguageCode)? = nil) {
+    public init(providers: [Locale.LanguageCode: any HXLocalisable], defaultLanguageCode _: Locale.LanguageCode? = nil, overrideLanguagePreference: ((_: Request) -> Locale.LanguageCode)? = nil) {
         self.providers = providers
         self.overrideLanguagePreference = overrideLanguagePreference
+        defaultLanguageCode = Locale.current.language.languageCode ?? Locale.LanguageCode("en")
     }
 }
 
@@ -27,5 +29,6 @@ public extension HXLocalisations {
     init() {
         providers = [:]
         overrideLanguagePreference = nil
+        defaultLanguageCode = Locale.current.language.languageCode ?? Locale.LanguageCode("en")
     }
 }

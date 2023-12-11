@@ -30,7 +30,10 @@ let package = Package(
         ),
         .testTarget(
             name: "VHXTests",
-            dependencies: ["VHX", .product(name: "XCTVapor", package: "vapor")],
+            dependencies: ["VHX",
+                           .product(name: "XCTVapor", package: "vapor"),
+                           .product(name: "Vapor", package: "vapor"),
+                           .product(name: "Leaf", package: "leaf")],
             resources: [
                 .copy("Views"),
             ]

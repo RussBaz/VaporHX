@@ -10,12 +10,10 @@ public struct HXRequestLocalisation {
     }
 
     public var prefered: Locale.LanguageCode {
-        let override: Locale.LanguageCode? = if let overrideLanguagePreference = req.application.localisations.overrideLanguagePreference {
+        if let overrideLanguagePreference = req.application.localisations.overrideLanguagePreference {
             overrideLanguagePreference(req)
         } else {
-            nil
+            req.headers.language(fallback: req.application.localisations.defaultLanguageCode).prefered
         }
-
-        return override ?? req.headers.language.prefered
     }
 }
