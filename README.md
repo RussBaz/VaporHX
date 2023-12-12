@@ -67,37 +67,37 @@ public func configure(_ app: Application) async throws {
 
 ## Table of Contents
 
-- [What is HTMX?](#what-is-htmx)
-- [HTMX](#htmx)
-  - [Installation](#installation)
-  - [Configuration](#configuration)
-  - [HX Request Extensions](#hx-request-extensions)
-  - [HX Extension Method and HX\<MyType\>](#hx-extension-method-and-hxmytype)
-  - [Request Headers](#request-headers)
-  - [Response Headers](#response-headers)
-    - [Overview](#htmx)
-    - [Location](#htmx)
-    - [Push Url](#htmx)
-    - [Redirect](#htmx)
-    - [Refresh](#htmx)
-    - [Replace Url](#htmx)
-    - [Reselect](#htmx)
-    - [Reswap](#htmx)
-    - [Retarget](#htmx)
-    - [Trigger, Trigger After Settle and Trigger After Swap](#htmx)
-  - [HXError, Abort and HXErrorMiddleware](#htmx)
-  - [HXRedirect](#htmx)
-- [Simple Localisation](#htmx)
-  - [Configuration](#htmx)
-  - [HXLocalisable Protocol and HXLocalisation](#htmx)
-  - [HXRequestLocalisation](#htmx)
-  - [Custom HXTextTag Leaf Tag](#htmx)
-- [Other Utilities](#htmx)
-  - [Date + Custom Interval](#htmx)
-  - [Request + Base Url](#htmx)
-  - [HXAsyncCommand](#htmx)
-  - [staticRoute Helper](#htmx)
-- [Changelog](#htmx)
+-   [What is HTMX?](#what-is-htmx)
+-   [HTMX](#htmx)
+    -   [Installation](#installation)
+    -   [Configuration](#configuration)
+    -   [HX Request Extensions](#hx-request-extensions)
+    -   [HX Extension Method and HX\<MyType\>](#hx-extension-method-and-hxmytype)
+    -   [Request Headers](#request-headers)
+    -   [Response Headers](#response-headers)
+        -   [Overview](#overview)
+        -   [Location](#location)
+        -   [Push Url](#htmx)
+        -   [Redirect](#htmx)
+        -   [Refresh](#htmx)
+        -   [Replace Url](#htmx)
+        -   [Reselect](#htmx)
+        -   [Reswap](#htmx)
+        -   [Retarget](#htmx)
+        -   [Trigger, Trigger After Settle and Trigger After Swap](#htmx)
+    -   [HXError, Abort and HXErrorMiddleware](#htmx)
+    -   [HXRedirect](#htmx)
+-   [Simple Localisation](#htmx)
+    -   [Configuration](#htmx)
+    -   [HXLocalisable Protocol and HXLocalisation](#htmx)
+    -   [HXRequestLocalisation](#htmx)
+    -   [Custom HXTextTag Leaf Tag](#htmx)
+-   [Other Utilities](#htmx)
+    -   [Date + Custom Interval](#htmx)
+    -   [Request + Base Url](#htmx)
+    -   [HXAsyncCommand](#htmx)
+    -   [staticRoute Helper](#htmx)
+-   [Changelog](#htmx)
 
 ## What is HTMX?
 
@@ -105,10 +105,10 @@ Here is my hot take: Make your backend code the single source of truth for your 
 
 And here is the official intro:
 
-> - Why should only `<a>` and `<form>` be able to make HTTP requests?
-> - Why should only `click` & `submit` events trigger them?
-> - Why should only `GET` & `POST` methods be available?
-> - Why should you only be able to replace the **_entire_** screen?
+> -   Why should only `<a>` and `<form>` be able to make HTTP requests?
+> -   Why should only `click` & `submit` events trigger them?
+> -   Why should only `GET` & `POST` methods be available?
+> -   Why should you only be able to replace the **_entire_** screen?
 >
 > By removing these **_arbitrary constraints_**, htmx completes HTML as a **_hypertext_**.
 
@@ -120,13 +120,13 @@ Lastly, here is a quick introduction to HTMX by `Fireship`: [htmx in 100 seconds
 
 SPM installation:
 
-- Add the package to your package dependencies
+-   Add the package to your package dependencies
 
 ```swift
-.package(url: "https://github.com/RussBaz/VaporHX.git", from: "0.0.13"),
+.package(url: "https://github.com/RussBaz/VaporHX.git", from: "0.0.14"),
 ```
 
-- Then add it to your target dependencies
+-   Then add it to your target dependencies
 
 ```swift
 .product(name: "VHX", package: "VaporHX"),
@@ -336,5 +336,48 @@ struct HXRequestHeaders {
 ```
 
 ### Response Headers
+
+#### Overview
+
+`HTMX` headers are defined as structs with a simple inbuilt validation. They can be added as individual headers to a `Response` object or as a whole collection by using `HXResponseHeaders` struct. The latter struct can be passed to `htmx` specific functions as an optional parameter, such as `.htmx.render` or `.hx`
+
+```swift
+// Cleaned up definition
+struct HXResponseHeaders {
+  var location: HXLocationHeader?
+  var pushUrl: HXPushUrlHeader?
+  var redirect: HXRedirectHeader?
+  var refresh: HXRefreshHeader?
+  var replaceUrl: HXReplaceUrlHeader?
+  var reselect: HXReselectHeader?
+  var reswap: HXReswapHeader?
+  var retarget: HXRetargetHeader?
+  var trigger: HXTriggerHeader?
+  var triggerAfterSettle: HXTriggerAfterSettleHeader?
+  var triggerAfterSwap: HXTriggerAfterSwapHeader?
+}
+
+// Example usages
+// With 'hx' extension
+app.get("api") { req in
+  let headers = HXResponseHeaders(retarget: HXRetargetHeader("#content"))
+  return MyApi(name: "name").hx(template: "api", headers: headers)
+}
+
+// With 'htmx.render' function
+app.get("example") { req in
+  let headers = HXResponseHeaders(retarget: HXRetargetHeader("#content"))
+  return req.htmx.render("example", headers: headers)
+}
+
+// With 'add' extension method on 'Response'
+// Can be used with the whole container ('HXResponseHeaders') or with individual headers (such as 'HXRetargetHeader')
+// Later header values will replace earlier headers
+app.get("redirect") { req in
+  req.htmx.autoRedirect(through: "/login", html: .temporary).add(headers: HXResponseHeaders())
+}
+```
+
+#### Location
 
 To be continued...
