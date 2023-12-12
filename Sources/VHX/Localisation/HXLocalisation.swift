@@ -3,7 +3,7 @@ import Vapor
 public struct HXLocalisations {
     public var providers: [Locale.LanguageCode: any HXLocalisable]
     public var defaultLanguageCode: Locale.LanguageCode
-    public var overrideLanguagePreference: ((_ req: Request) -> Locale.LanguageCode)?
+    public var overrideLanguagePreference: ((_ req: Request) -> Locale.LanguageCode?)?
 
     public func localise(text: String, for code: Locale.LanguageCode) -> String {
         guard code.isISOLanguage else { return text }
