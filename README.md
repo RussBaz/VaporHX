@@ -123,7 +123,7 @@ SPM installation:
 -   Add the package to your package dependencies
 
 ```swift
-.package(url: "https://github.com/RussBaz/VaporHX.git", from: "0.0.15"),
+.package(url: "https://github.com/RussBaz/VaporHX.git", from: "0.0.16"),
 ```
 
 -   Then add it to your target dependencies

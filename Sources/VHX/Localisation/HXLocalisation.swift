@@ -18,7 +18,7 @@ public struct HXLocalisations {
         return text
     }
 
-    public init(providers: [Locale.LanguageCode: any HXLocalisable], defaultLanguageCode: Locale.LanguageCode? = nil, overrideLanguagePreference: ((_: Request) -> Locale.LanguageCode)? = nil) {
+    public init(providers: [Locale.LanguageCode: any HXLocalisable], defaultLanguageCode: Locale.LanguageCode? = nil, overrideLanguagePreference: ((_: Request) -> Locale.LanguageCode?)? = nil) {
         self.providers = providers
         self.overrideLanguagePreference = overrideLanguagePreference
         self.defaultLanguageCode = defaultLanguageCode ?? Locale.current.language.languageCode ?? Locale.LanguageCode("en")

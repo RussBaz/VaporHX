@@ -13,7 +13,7 @@ public extension Application {
             if storage[LocalisationStorageKey.self] == nil {
                 storage[LocalisationStorageKey.self] = newValue
             } else {
-                fatalError("Rediclaration of Localisation")
+                fatalError("Redeclaration of Localisations")
             }
         }
     }
