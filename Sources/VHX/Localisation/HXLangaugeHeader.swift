@@ -2,12 +2,12 @@ import Vapor
 
 public struct HXLanguageHeader {
     public struct Preference {
-        public let value: Locale.LanguageCode
+        public let value: String
         public let priority: Double
 
         static func parse(directive: [HTTPHeaders.Directive]) -> Preference? {
             guard let first = directive.first, first.value != "q" else { return nil }
-            let value = Locale.LanguageCode(String(first.value))
+            let value = String(first.value)
             var priority = 1.0
 
             if let last = directive.last, last.value == "q", let p = last.parameter {
@@ -21,13 +21,13 @@ public struct HXLanguageHeader {
     }
 
     public let preferences: [Preference]
-    public let defautLanguageCode: Locale.LanguageCode
+    public let defautLanguageCode: String
 
-    static func parse(directives: [[HTTPHeaders.Directive]], lang: Locale.LanguageCode) -> HXLanguageHeader {
+    static func parse(directives: [[HTTPHeaders.Directive]], lang: String) -> HXLanguageHeader {
         .init(preferences: directives.compactMap(Preference.parse).sorted(), defautLanguageCode: lang)
     }
 
-    public var prefered: Locale.LanguageCode {
+    public var prefered: String {
         preferences.last?.value ?? defautLanguageCode
     }
 }
