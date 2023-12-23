@@ -10,7 +10,7 @@ public struct HXLocalisations {
 
         if let localisation = providers[code] {
             return localisation.localise(text: text)
-        } else if let moreGeneralCode = generaliseLangCode(code), let localisation = providers[moreGeneralCode] {
+        } else if let moreGeneralCode = HXLocalisations.generaliseLang(code: code), let localisation = providers[moreGeneralCode] {
             return localisation.localise(text: text)
         }
 
@@ -23,7 +23,7 @@ public struct HXLocalisations {
         self.defaultLanguageCode = defaultLanguageCode ?? Locale.current.languageCode ?? "en"
     }
 
-    private func generaliseLangCode(_ code: String) -> String? {
+    public static func generaliseLang(code: String) -> String? {
         guard !code.isEmpty else { return nil }
 
         for (i, c) in code.enumerated() {
