@@ -63,12 +63,17 @@ public extension Htmx {
     func render(_ name: String, _ context: some Encodable, page: Bool? = nil, headers: HXResponseHeaderAddable? = nil) async throws -> Response {
         let page = page ?? (req.method == .GET && !req.headers.htmx.request)
 
-        let view = if page {
-            try await req.view.render("\(req.application.htmx.pageSource.pagePrefix)/\(name)", context).get()
+        let templateName: String = if page {
+            "\(req.application.htmx.pageSource.pagePrefix)/\(name)"
         } else {
-            try await req.view.render(name, context).get()
+            if name.starts(with: "["), let i = name.firstIndex(of: "]") {
+                String(name[name.index(after: i) ..< name.endIndex])
+            } else {
+                name
+            }
         }
 
+        let view = try await req.view.render(templateName, context).get()
         let response = try await view.encodeResponse(for: req)
 
         if let headers {
@@ -81,11 +86,17 @@ public extension Htmx {
     func render(_ name: String, page: Bool? = nil, headers: HXResponseHeaderAddable? = nil) async throws -> Response {
         let page = page ?? (req.method == .GET && !req.headers.htmx.request)
 
-        let view = if page {
-            try await req.view.render("\(req.application.htmx.pageSource.pagePrefix)/\(name)")
+        let templateName: String = if page {
+            "\(req.application.htmx.pageSource.pagePrefix)/\(name)"
         } else {
-            try await req.view.render(name)
+            if name.starts(with: "["), let i = name.firstIndex(of: "]") {
+                String(name[name.index(after: i) ..< name.endIndex])
+            } else {
+                name
+            }
         }
+
+        let view = try await req.view.render(templateName)
 
         let response = try await view.encodeResponse(for: req)
 

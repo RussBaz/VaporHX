@@ -1,6 +1,6 @@
 import Vapor
 
-public func configureHtmx(_ app: Application, pageTemplate template: ((_ name: String) -> String)? = nil) throws {
+public func configureHtmx(_ app: Application, pageTemplate template: PageTemplateBuilder? = nil) throws {
     let config = if let template {
         HtmxConfiguration(pageTemplate: template)
     } else {

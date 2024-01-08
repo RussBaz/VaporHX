@@ -5,9 +5,11 @@ public protocol HXLeafSource: LeafSource {
     var pagePrefix: String { get }
 }
 
+public typealias PageTemplateBuilder = (_ name: String) -> String
+
 public struct HXBasicLeafSource: HXLeafSource {
     public let pagePrefix: String
-    public let pageTemplate: (_ name: String) -> String
+    public let pageTemplate: PageTemplateBuilder
 
     public enum HtmxPageLeafSourceError: Error {
         case illegalFormat
@@ -32,7 +34,7 @@ public struct HXBasicLeafSource: HXLeafSource {
     }
 }
 
-public func hxPageLeafSource(prefix: String = "--page", template: ((_ name: String) -> String)?) -> HXLeafSource {
+public func hxPageLeafSource(prefix: String = "--page", template: PageTemplateBuilder?) -> HXLeafSource {
     if let template {
         return HXBasicLeafSource(pagePrefix: prefix, pageTemplate: template)
     } else {
@@ -43,4 +45,10 @@ public func hxPageLeafSource(prefix: String = "--page", template: ((_ name: Stri
         }
         return HXBasicLeafSource(pagePrefix: prefix, pageTemplate: template)
     }
+}
+
+public func hxBasicPageLeafSource(prefix: String = "--page", baseTemplate: String = "index-base", slotName: String = "body") -> HXLeafSource {
+    let template = HXBasicLeafTemplate.prepareBasicTemplateBuilder(defaultBaseTemplate: baseTemplate, defaultSlotName: slotName)
+
+    return HXBasicLeafSource(pagePrefix: prefix, pageTemplate: template)
 }

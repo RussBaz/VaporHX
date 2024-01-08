@@ -17,7 +17,8 @@ final class VHXTests: XCTestCase {
                          sandboxDirectory: pathToViews,
                          viewDirectory: pathToViews))
 
-        try configureHtmx(app)
+        let config = HtmxConfiguration.basic()
+        try configureHtmx(app, configuration: config)
         try configureLocalisation(app, localisations: HXLocalisations())
 
         app.get("hello") { _ in
@@ -39,6 +40,14 @@ final class VHXTests: XCTestCase {
         }
 
         app.get("view", use: staticRoute(template: "test-view"))
+
+        app.get("view", "override", "template") { req in
+            try await req.htmx.render("[index-custom]world")
+        }
+
+        app.get("view", "override", "slot") { req in
+            try await req.htmx.render("[index-custom:extra]world")
+        }
 
         try app.testable().test(.GET, "hello") { res in
             XCTAssertEqual(res.status, .ok)
@@ -77,7 +86,33 @@ final class VHXTests: XCTestCase {
 
         try app.testable().test(.GET, "view") { res in
             XCTAssertEqual(res.status, .ok)
-            XCTAssertEqual(res.body.string, "<p>Hello World</p>\n")
+            XCTAssertEqual(res.body.string, "<div><p>Hello</p> <p>Hello World</p>\n </div>\n")
         }
+
+        try app.testable().test(.GET, "view/override/template") { res in
+            XCTAssertEqual(res.status, .ok)
+            XCTAssertEqual(res.body.string, "<div><p>Welcome</p> <p>World!</p>\n </div>\n\n")
+        }
+
+        try app.testable().test(.GET, "view/override/template", beforeRequest: { req in
+            req.headers.replaceOrAdd(name: .accept, value: HTTPMediaType.html.serialize())
+            req.headers.replaceOrAdd(name: "HX-Request", value: "true")
+        }, afterResponse: { res in
+            XCTAssertEqual(res.status, .ok)
+            XCTAssertEqual(res.body.string, "<p>World!</p>\n")
+        })
+
+        try app.testable().test(.GET, "view/override/slot") { res in
+            XCTAssertEqual(res.status, .ok)
+            XCTAssertEqual(res.body.string, "<div><p>Welcome</p></div>\n <p>World!</p>\n \n")
+        }
+
+        try app.testable().test(.GET, "view/override/slot", beforeRequest: { req in
+            req.headers.replaceOrAdd(name: .accept, value: HTTPMediaType.html.serialize())
+            req.headers.replaceOrAdd(name: "HX-Request", value: "true")
+        }, afterResponse: { res in
+            XCTAssertEqual(res.status, .ok)
+            XCTAssertEqual(res.body.string, "<p>World!</p>\n")
+        })
     }
 }
