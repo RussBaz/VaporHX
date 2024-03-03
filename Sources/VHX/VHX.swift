@@ -31,3 +31,9 @@ public func staticRoute(template: String) -> ((Request) async throws -> Response
         try await req.htmx.render(template)
     }
 }
+
+public func staticRoute<T: HXTemplateable>(template: T.Type) -> ((Request) async throws -> Response) where T.Context == EmptyContext {
+    { (req: Request) async throws in
+        try await req.htmx.render(template, .init())
+    }
+}

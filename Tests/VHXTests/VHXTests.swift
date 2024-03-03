@@ -15,6 +15,12 @@ final class VHXTests: XCTestCase {
         }
     }
 
+    struct AnotherTemplateable: HXTemplateable {
+        static func render(req _: Request, context _: EmptyContext, isPage: Bool) -> String {
+            "Empty. Page: \(isPage)."
+        }
+    }
+
     // Sanity test
     func testSanity() throws {
         let app = Application(.testing)
@@ -35,6 +41,8 @@ final class VHXTests: XCTestCase {
         app.get("hello") { _ in
             "world"
         }
+
+        app.post("empty", use: staticRoute(template: AnotherTemplateable.self))
 
         app.post("echo") { _ in
             HTTPStatus.ok
@@ -153,6 +161,14 @@ final class VHXTests: XCTestCase {
             let expectedHero = Superhero(name: "Mr Freeman", superpower: "science")
             XCTAssertEqual(res.status, .ok)
             XCTAssertEqual(hero, expectedHero)
+        }
+
+        try app.testable().test(.POST, "empty") { req in
+            req.headers.replaceOrAdd(name: .accept, value: HTTPMediaType.html.serialize())
+            req.headers.replaceOrAdd(name: "HX-Request", value: "true")
+        } afterResponse: { res in
+            XCTAssertEqual(res.status, .ok)
+            XCTAssertEqual(res.body.string, "Empty. Page: false.")
         }
     }
 }
