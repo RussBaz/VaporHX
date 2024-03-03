@@ -6,7 +6,9 @@
 
 The core idea is that you can combine your existing API endpoints with HTMX endpoints with minimal effort. The response will depend on the value of the request `Accept` header and the request method.
 
-All you need to do is to call the `hx(template: String)` method on your `Content` struct and return its value. It will automatically pick the appropriate response, whether it is JSON encoded data, a full HTML page or an HTMX fragment. When HTML (HTMX) is returned, your content is injected into the specified template as a context.
+All you need to do is to call the `hx(template: String)` method on your `Content` struct and return its value. It will automatically pick the appropriate response, whether it is JSON encoded data, a full HTML page or an HTMX fragment. When HTML (HTMX) is returned, your content is injected into the specified template as a context. It uses the Leaf templating engine by default.
+
+However, you do not have to use the Leaf engine if you do not want to. This package defines `HXTemplateable` protocol with a single render method that returns an html page as a string. For as long as your own templating engine implements it, you can pass its type into the `hx(template:)` method instead.
 
 ```swift
 import VHX
@@ -50,6 +52,7 @@ Basic configuration (`configure.swift`):
 import Vapor
 import VHX
 
+// Basic config configures Leaf engine but you are not required to use it
 // Basic config assumes 'index-base.leaf' template exists and that it contains '#import("body")' tag
 // It will generate a dynamic template that wraps the content of the specified template for NON-htmx calls to 'htmx.render'
 // It will simply plug the provided template into the 'body' slot of the base template
@@ -62,37 +65,39 @@ public func configure(_ app: Application) async throws {
 
 ## Table of Contents
 
--   [What is HTMX?](#what-is-htmx)
--   [HTMX](#htmx)
-    -   [Installation](#installation)
-    -   [Configuration](#configuration)
-    -   [HX Request Extensions](#hx-request-extensions)
-    -   [HX Extension Method and HX\<MyType\>](#hx-extension-method-and-hxmytype)
-    -   [Request Headers](#request-headers)
-    -   [Response Headers](#response-headers)
-        -   [Overview](#overview)
-        -   [Location](#location)
-        -   [Push Url](#htmx)
-        -   [Redirect](#htmx)
-        -   [Refresh](#htmx)
-        -   [Replace Url](#htmx)
-        -   [Reselect](#htmx)
-        -   [Reswap](#htmx)
-        -   [Retarget](#htmx)
-        -   [Trigger, Trigger After Settle and Trigger After Swap](#htmx)
-    -   [HXError, Abort and HXErrorMiddleware](#htmx)
-    -   [HXRedirect](#htmx)
--   [Simple Localisation](#htmx)
-    -   [Configuration](#htmx)
-    -   [HXLocalisable Protocol and HXLocalisation](#htmx)
-    -   [HXRequestLocalisation](#htmx)
-    -   [Custom HXTextTag Leaf Tag](#htmx)
--   [Other Utilities](#htmx)
-    -   [Date + Custom Interval](#htmx)
-    -   [Request + Base Url](#htmx)
-    -   [HXAsyncCommand](#htmx)
-    -   [staticRoute Helper](#htmx)
--   [Changelog](#htmx)
+- [What is HTMX?](#what-is-htmx)
+- [HTMX](#htmx)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
+  - [HX Request Extensions](#hx-request-extensions)
+  - [HX Extension Method and HX\<MyType\>](#hx-extension-method-and-hxmytype)
+  - [HX Templateable and Custom Templating Engines](#hx-templateable-and-custom-templating-engines)
+  - [Request Headers](#request-headers)
+  - [Response Headers](#response-headers)
+    - [Overview](#overview)
+    - [Location](#location)
+    - [Push Url](#htmx)
+    - [Redirect](#htmx)
+    - [Refresh](#htmx)
+    - [Replace Url](#htmx)
+    - [Reselect](#htmx)
+    - [Reswap](#htmx)
+    - [Retarget](#htmx)
+    - [Trigger, Trigger After Settle and Trigger After Swap](#htmx)
+  - [HXError, Abort and HXErrorMiddleware](#htmx)
+  - [HXRedirect](#htmx)
+- [Simple Localisation](#htmx)
+  - [Configuration](#htmx)
+  - [HXLocalisable Protocol and HXLocalisation](#htmx)
+  - [HXRequestLocalisation](#htmx)
+  - [Custom HXTextTag Leaf Tag](#htmx)
+- [Other Utilities](#htmx)
+  - [String + View](#htmx)
+  - [Date + Custom Interval](#htmx)
+  - [Request + Base Url](#htmx)
+  - [HXAsyncCommand](#htmx)
+  - [staticRoute Helper](#htmx)
+- [Changelog](#htmx)
 
 ## What is HTMX?
 
@@ -100,10 +105,10 @@ Here is my hot take: Make your backend code the single source of truth for your 
 
 And here is the official intro:
 
-> -   Why should only `<a>` and `<form>` be able to make HTTP requests?
-> -   Why should only `click` & `submit` events trigger them?
-> -   Why should only `GET` & `POST` methods be available?
-> -   Why should you only be able to replace the **_entire_** screen?
+> - Why should only `<a>` and `<form>` be able to make HTTP requests?
+> - Why should only `click` & `submit` events trigger them?
+> - Why should only `GET` & `POST` methods be available?
+> - Why should you only be able to replace the **_entire_** screen?
 >
 > By removing these **_arbitrary constraints_**, htmx completes HTML as a **_hypertext_**.
 
@@ -115,13 +120,13 @@ Lastly, here is a quick introduction to HTMX by `Fireship`: [htmx in 100 seconds
 
 SPM installation:
 
--   Add the package to your package dependencies
+- Add the package to your package dependencies
 
 ```swift
-.package(url: "https://github.com/RussBaz/VaporHX.git", from: "0.0.19"),
+.package(url: "https://github.com/RussBaz/VaporHX.git", from: "0.0.20"),
 ```
 
--   Then add it to your target dependencies
+- Then add it to your target dependencies
 
 ```swift
 .product(name: "VHX", package: "VaporHX"),
@@ -131,11 +136,13 @@ SPM installation:
 
 Assuming the standard use of `configure.swift' in all the following examples.
 
-The simplest config (without localisation helpers):
+The simplest config usign the Leaf engine (without localisation helpers):
 
 ```swift
 import Vapor
 import VHX
+
+// Basic config configures Leaf engine but you are not required to use it
 
 // Basic config assumes 'index-base.leaf' template exists and that it contains '#import("body")' tag
 // It will generate a dynamic template that wraps the content of the specified template for NON-htmx calls to 'htmx.render'
@@ -263,10 +270,13 @@ How to automatically decide if you need to render an HTMX fragment or a full pag
 // Try this method on the 'req.htmx' extension
 // This method tries to mimic the 'req.view.render' api
 // but it also can accept optional HXResponseHeaders
-// Setting the 'page' parameter will force to always return a full page or a page fragment only
+// Setting the 'page' parameter to true will force the server to always return a full page or a page fragment only otherwise
 func render(_ name: String, _ context: some Encodable, page: Bool? = nil, headers: HXResponseHeaders? = nil) async throws -> Response
 
 func render(_ name: String, page: Bool? = nil, headers: HXResponseHeaders? = nil) async throws -> Response
+
+// If you are using a custom templating engine, then you should use this method
+func render<T: HXTemplateable>(_ template: T.Type, _ context: T.Context, page: Bool? = nil, headers: HXResponseHeaderAddable? = nil) async throws -> Response
 ```
 
 Furthermore, if you are using the default template generator, you can manually override the base template name and the slot name. Here is an example how it can be done:
@@ -332,6 +342,9 @@ Here is how it works:
 // This is a slightly simplified version of this extension method declaration
 extension Content where Self: AsyncResponseEncodable & Encodable {
   func hx(template name: String? = nil, page: Bool? = nil, headers: HXResponseHeaders? = nil) -> HX<Self>
+
+  // For custom templating engines
+  func hx<T: HXTemplateable>(template: T.Type, page: Bool? = nil, headers: HXResponseHeaders? = nil) -> HX<Self> where T.Context == Self
 }
 
 // And this is how you would use it
@@ -345,13 +358,29 @@ app.get("api") { req in
 One should not normally deal with the `HX` struct directly but in case it is ever needed, here is its definition:
 
 ```swift
+typealias TemplateRenderer = (_ req: Request, _ context: T, _ page: Bool?, _ headers: HXResponseHeaders?) async throws -> Response
+
 struct HX<T: AsyncResponseEncodable & Encodable> {
   let context: T
-  let template: String?
+  let template: TemplateRenderer?
   let page: Bool?
   let htmxHeaders: HXResponseHeaders?
 }
 ```
+
+### HX Templateable and Custom Templating Engines
+
+If you would like to use your own templating engine, then each renderer should implement the following protocol:
+
+```swift
+protocol HXTemplateable {
+    associatedtype Context: AsyncResponseEncodable & Encodable
+
+    static func render(req: Request, context: Context, isPage: Bool) -> String
+}
+```
+
+If this protocol is not enough for your use case, please open an issue and we can discuss it there.
 
 ### Request Headers
 

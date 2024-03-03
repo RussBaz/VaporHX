@@ -107,6 +107,19 @@ public extension Htmx {
         return response
     }
 
+    func render<T: HXTemplateable>(_ template: T.Type, _ context: T.Context, page: Bool? = nil, headers: HXResponseHeaderAddable? = nil) async throws -> Response {
+        let page = page ?? (req.method == .GET && !req.headers.htmx.request)
+
+        let view = template.render(req: req, context: context, isPage: page).asView
+        let response = try await view.encodeResponse(for: req)
+
+        if let headers {
+            headers.add(to: response)
+        }
+
+        return response
+    }
+
     func redirect(to location: String, htmx: HXRedirect.Kind = .redirect, html: Redirect = .normal, refresh: Bool = false) async throws -> Response {
         try await HXRedirect(to: location, htmx: htmx, html: html, refresh: refresh).encodeResponse(for: req)
     }

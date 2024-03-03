@@ -16,8 +16,8 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.86.2"),
-        .package(url: "https://github.com/vapor/leaf.git", from: "4.2.4"),
+        .package(url: "https://github.com/vapor/vapor.git", from: "4.92.4"),
+        .package(url: "https://github.com/vapor/leaf.git", from: "4.3.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -30,10 +30,12 @@ let package = Package(
         ),
         .testTarget(
             name: "VHXTests",
-            dependencies: ["VHX",
-                           .product(name: "XCTVapor", package: "vapor"),
-                           .product(name: "Vapor", package: "vapor"),
-                           .product(name: "Leaf", package: "leaf")],
+            dependencies: [
+                .target(name: "VHX"),
+                .product(name: "XCTVapor", package: "vapor"),
+                .product(name: "Vapor", package: "vapor"),
+                .product(name: "Leaf", package: "leaf"),
+            ],
             resources: [
                 .copy("Views"),
             ]
