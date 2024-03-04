@@ -10,13 +10,13 @@ final class VHXTests: XCTestCase {
     }
 
     struct SomeTemplateable: HXTemplateable {
-        static func render(req: Request, context: Superhero, isPage: Bool) -> String {
+        static func render(req: Request, isPage: Bool, context: Superhero) -> String {
             "Hello, \(context.name). Your superpower is \(context.superpower). [Page: \(isPage), type: \(req.htmx.prefers)]"
         }
     }
 
     struct AnotherTemplateable: HXTemplateable {
-        static func render(req _: Request, context _: EmptyContext, isPage: Bool) -> String {
+        static func render(req _: Request, isPage: Bool, context _: EmptyContext) -> String {
             "Empty. Page: \(isPage)."
         }
     }

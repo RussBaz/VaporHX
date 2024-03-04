@@ -110,7 +110,7 @@ public extension Htmx {
     func render<T: HXTemplateable>(_ template: T.Type, _ context: T.Context, page: Bool? = nil, headers: HXResponseHeaderAddable? = nil) async throws -> Response {
         let page = page ?? (req.method == .GET && !req.headers.htmx.request)
 
-        let view = template.render(req: req, context: context, isPage: page).asView
+        let view = template.render(req: req, isPage: page, context: context).asView
         let response = try await view.encodeResponse(for: req)
 
         if let headers {

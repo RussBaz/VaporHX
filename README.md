@@ -2,6 +2,8 @@
 
 **VaporHX** is a collection of Htmx and other extensions that I made when started working with htmx in a personal project (and thus they can be quite opinionated). In any case, please feel free to discuss any changes, as I am open to new and convincing ideas.
 
+NOTE: All the HTMX parts are fully functional and they are actively used by me, even if the documentation is incomplete. I am sorry about this but it writing docs is incredibly tedious.
+
 ## Core Idea
 
 The core idea is that you can combine your existing API endpoints with HTMX endpoints with minimal effort. The response will depend on the value of the request `Accept` header and the request method.
@@ -65,39 +67,39 @@ public func configure(_ app: Application) async throws {
 
 ## Table of Contents
 
-- [What is HTMX?](#what-is-htmx)
-- [HTMX](#htmx)
-  - [Installation](#installation)
-  - [Configuration](#configuration)
-  - [HX Request Extensions](#hx-request-extensions)
-  - [HX Extension Method and HX\<MyType\>](#hx-extension-method-and-hxmytype)
-  - [HX Templateable and Custom Templating Engines](#hx-templateable-and-custom-templating-engines)
-  - [Request Headers](#request-headers)
-  - [Response Headers](#response-headers)
-    - [Overview](#overview)
-    - [Location](#location)
-    - [Push Url](#htmx)
-    - [Redirect](#htmx)
-    - [Refresh](#htmx)
-    - [Replace Url](#htmx)
-    - [Reselect](#htmx)
-    - [Reswap](#htmx)
-    - [Retarget](#htmx)
-    - [Trigger, Trigger After Settle and Trigger After Swap](#htmx)
-  - [HXError, Abort and HXErrorMiddleware](#htmx)
-  - [HXRedirect](#htmx)
-- [Simple Localisation](#htmx)
-  - [Configuration](#htmx)
-  - [HXLocalisable Protocol and HXLocalisation](#htmx)
-  - [HXRequestLocalisation](#htmx)
-  - [Custom HXTextTag Leaf Tag](#htmx)
-- [Other Utilities](#htmx)
-  - [String + View](#htmx)
-  - [Date + Custom Interval](#htmx)
-  - [Request + Base Url](#htmx)
-  - [HXAsyncCommand](#htmx)
-  - [staticRoute Helper](#htmx)
-- [Changelog](#htmx)
+-   [What is HTMX?](#what-is-htmx)
+-   [HTMX](#htmx)
+    -   [Installation](#installation)
+    -   [Configuration](#configuration)
+    -   [HX Request Extensions](#hx-request-extensions)
+    -   [HX Extension Method and HX\<MyType\>](#hx-extension-method-and-hxmytype)
+    -   [HX Templateable and Custom Templating Engines](#hx-templateable-and-custom-templating-engines)
+    -   [Request Headers](#request-headers)
+    -   [Response Headers](#response-headers)
+        -   [Overview](#overview)
+        -   [Location](#location)
+        -   [Push Url](#htmx)
+        -   [Redirect](#htmx)
+        -   [Refresh](#htmx)
+        -   [Replace Url](#htmx)
+        -   [Reselect](#htmx)
+        -   [Reswap](#htmx)
+        -   [Retarget](#htmx)
+        -   [Trigger, Trigger After Settle and Trigger After Swap](#htmx)
+    -   [HXError, Abort and HXErrorMiddleware](#htmx)
+    -   [HXRedirect](#htmx)
+-   [Simple Localisation](#htmx)
+    -   [Configuration](#htmx)
+    -   [HXLocalisable Protocol and HXLocalisation](#htmx)
+    -   [HXRequestLocalisation](#htmx)
+    -   [Custom HXTextTag Leaf Tag](#htmx)
+-   [Other Utilities](#htmx)
+    -   [String + View](#htmx)
+    -   [Date + Custom Interval](#htmx)
+    -   [Request + Base Url](#htmx)
+    -   [HXAsyncCommand](#htmx)
+    -   [staticRoute Helper](#htmx)
+-   [Changelog](#htmx)
 
 ## What is HTMX?
 
@@ -105,10 +107,10 @@ Here is my hot take: Make your backend code the single source of truth for your 
 
 And here is the official intro:
 
-> - Why should only `<a>` and `<form>` be able to make HTTP requests?
-> - Why should only `click` & `submit` events trigger them?
-> - Why should only `GET` & `POST` methods be available?
-> - Why should you only be able to replace the **_entire_** screen?
+> -   Why should only `<a>` and `<form>` be able to make HTTP requests?
+> -   Why should only `click` & `submit` events trigger them?
+> -   Why should only `GET` & `POST` methods be available?
+> -   Why should you only be able to replace the **_entire_** screen?
 >
 > By removing these **_arbitrary constraints_**, htmx completes HTML as a **_hypertext_**.
 
@@ -120,13 +122,13 @@ Lastly, here is a quick introduction to HTMX by `Fireship`: [htmx in 100 seconds
 
 SPM installation:
 
-- Add the package to your package dependencies
+-   Add the package to your package dependencies
 
 ```swift
-.package(url: "https://github.com/RussBaz/VaporHX.git", from: "0.0.20"),
+.package(url: "https://github.com/RussBaz/VaporHX.git", from: "0.0.21"),
 ```
 
-- Then add it to your target dependencies
+-   Then add it to your target dependencies
 
 ```swift
 .product(name: "VHX", package: "VaporHX"),
@@ -376,7 +378,7 @@ If you would like to use your own templating engine, then each renderer should i
 protocol HXTemplateable {
     associatedtype Context: AsyncResponseEncodable & Encodable
 
-    static func render(req: Request, context: Context, isPage: Bool) -> String
+    static func render(req: Request, isPage: Bool, context: Context) -> String
 }
 ```
 
