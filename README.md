@@ -100,6 +100,7 @@ public func configure(_ app: Application) async throws {
     -   [HXAsyncCommand](#htmx)
     -   [staticRoute Helper](#htmx)
 -   [Changelog](#htmx)
+-   [Demo](#demo)
 
 ## What is HTMX?
 
@@ -452,3 +453,18 @@ app.get("redirect") { req in
 `HXLocationHeader` is type safe constructor for a `HX-Location` response header. It is the most complicated response header in this library but it is thankfully a rarely used one.
 
 To be continued...
+
+## Demo
+This package come bundled with a Demo that you can run locally. It consists of a few examples from the [HTMX.org](https://htmx.org/examples/) website
+
+#### To run the demo using Xcode
+- Open this project in Xcode
+- Switch the scheme from `VHX` to `Demo` (left hand side of the top url bar)
+- Press the play / run button
+- Then head to `http://localhost:8080` 
+
+#### To run the demo using the command line
+- execute the following from the VaporHX projects root dir
+``` bash
+swift run Demo 
+```

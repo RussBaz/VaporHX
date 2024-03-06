@@ -1,0 +1,15 @@
+#for(user in in.agents):
+  <tr style="margin-bottom: 1.5em;">
+    <td style="padding-bottom: 1.5em;">#(user.name)</td>
+    <td style="padding-bottom: 1.5em;">#(user.email)</td>
+    <td style="padding-bottom: 1.5em;">#(user.id)</td>
+  </tr>
+#endfor
+<tr style="margin-bottom: 1.5em;"
+    hx-get="/infinite/?page=#(in.nextPage)"
+    hx-trigger="revealed"
+    hx-swap="afterend">
+  <td style="padding-bottom: 1.5em;">#(in.lastAgent.name)</td>
+  <td style="padding-bottom: 1.5em;">#(in.lastAgent.email)</td>
+  <td style="padding-bottom: 1.5em;">#(in.lastAgent.id)</td>
+</tr>

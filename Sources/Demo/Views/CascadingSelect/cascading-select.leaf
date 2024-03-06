@@ -1,0 +1,17 @@
+<div>
+    <label >Make</label>
+    <select name="make" hx-get="/select/models" hx-target="#models" hx-indicator=".htmx-indicator">
+      <option value="audi">Audi</option>
+      <option value="toyota">Toyota</option>
+      <option value="bmw">BMW</option>
+    </select>
+</div>
+<div>
+    <label>Model</label>
+    <select id="models" name="model">
+      #for(model in models):
+        <option value='#(model.name)'>#(model.name)</option>
+      #endfor
+    </select>
+    <img class="htmx-indicator" width="20" src="/img/bars.svg">
+</div>

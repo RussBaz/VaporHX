@@ -40,5 +40,13 @@ let package = Package(
                 .copy("Views"),
             ]
         ),
+        .executableTarget(
+            name: "Demo",
+            dependencies: [
+                .target(name: "VHX"),
+                .product(name: "Leaf", package: "leaf"),
+                .product(name: "Vapor", package: "vapor"),
+            ]
+        ),
     ]
 )

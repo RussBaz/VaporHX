@@ -1,0 +1,3 @@
+<div hx-get="/lazy/graph" hx-trigger="load">
+  <img  alt="Result loading..." class="htmx-indicator" width="30" src="/img/bars.svg"/>
+</div>
