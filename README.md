@@ -455,7 +455,7 @@ app.get("redirect") { req in
 To be continued...
 
 ## Demo
-This package come bundled with a Demo that you can run locally. It consists of a few examples from the [HTMX.org](https://htmx.org/examples/) website
+This package comes bundled with a Demo that you can run locally. It consists of a few examples from the [HTMX.org](https://htmx.org/examples/) website
 
 #### To run the demo using Xcode
 - Open this project in Xcode
