@@ -1,4 +1,4 @@
-#for(user in in.agents):
+#for(user in dto.agents):
   <tr>
     <td style="padding-bottom: 1.5em;">#(user.name)</td>
     <td style="padding-bottom: 1.5em;">#(user.email)</td>
@@ -7,7 +7,7 @@
 #endfor
 <tr id="replaceMe">
   <td colspan="3">
-    <button class='btn' hx-get="/contacts/?page=#(in.nextPage)"
+    <button class='btn' hx-get="/contacts/?page=#(dto.nextPage)"
                         hx-target="#replaceMe"
                         hx-swap="outerHTML">
          Load More Agents... <img class="htmx-indicator" src="/img/bars.svg">
