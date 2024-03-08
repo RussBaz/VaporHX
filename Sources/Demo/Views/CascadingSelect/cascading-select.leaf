@@ -1,15 +1,15 @@
 <div>
     <label >Make</label>
     <select name="make" hx-get="/select/models" hx-target="#models" hx-indicator=".htmx-indicator">
-      <option value="audi">Audi</option>
-      <option value="toyota">Toyota</option>
-      <option value="bmw">BMW</option>
+      <option value="audi" #if(dto.make == "audi"):selected#endif>Audi</option>
+      <option value="toyota" #if(dto.make == "toyota"):selected#endif>Toyota</option>
+      <option value="bmw" #if(dto.make == "bmw"):selected#endif>BMW</option>
     </select>
 </div>
 <div>
     <label>Model</label>
     <select id="models" name="model">
-      #for(model in models):
+      #for(model in dto.models):
         <option value='#(model.name)'>#(model.name)</option>
       #endfor
     </select>
