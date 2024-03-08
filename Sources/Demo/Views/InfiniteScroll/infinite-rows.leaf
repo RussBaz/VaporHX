@@ -1,15 +1,15 @@
-#for(user in in.agents):
+#for(agent in dto.agents):
   <tr style="margin-bottom: 1.5em;">
-    <td style="padding-bottom: 1.5em;">#(user.name)</td>
-    <td style="padding-bottom: 1.5em;">#(user.email)</td>
-    <td style="padding-bottom: 1.5em;">#(user.id)</td>
+    <td style="padding-bottom: 1.5em;">#(agent.name)</td>
+    <td style="padding-bottom: 1.5em;">#(agent.email)</td>
+    <td style="padding-bottom: 1.5em;">#(agent.id)</td>
   </tr>
 #endfor
 <tr style="margin-bottom: 1.5em;"
-    hx-get="/infinite/?page=#(in.nextPage)"
+    hx-get="/infinite/?page=#(dto.nextPage)"
     hx-trigger="revealed"
     hx-swap="afterend">
-  <td style="padding-bottom: 1.5em;">#(in.lastAgent.name)</td>
-  <td style="padding-bottom: 1.5em;">#(in.lastAgent.email)</td>
-  <td style="padding-bottom: 1.5em;">#(in.lastAgent.id)</td>
+  <td style="padding-bottom: 1.5em;">#(dto.lastAgent.name)</td>
+  <td style="padding-bottom: 1.5em;">#(dto.lastAgent.email)</td>
+  <td style="padding-bottom: 1.5em;">#(dto.lastAgent.id)</td>
 </tr>
