@@ -1,0 +1,25 @@
+<form id="checked-contacts"
+      hx-post="/users"
+      hx-swap="outerHTML settle:3s"
+      hx-target="#toast">
+    <table>
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Active</th>
+      </tr>
+      </thead>
+      <tbody id="tbody">
+      #for(user in users): 
+        <tr>
+          <td>#(user.name)</td>
+          <td>#(user.email)</td>
+          <td><input type="checkbox" name="#(user.email)" #if(user.isActive):checked#endif></td>
+        </tr>
+      #endfor
+      </tbody>
+    </table>
+    <input type="submit" value="Bulk Update">
+    <div><span id="toast"></span></div>
+</form>

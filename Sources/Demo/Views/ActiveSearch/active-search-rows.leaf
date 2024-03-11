@@ -1,0 +1,7 @@
+#for(user in users):
+  <tr>
+    <td>#(user.firstName)</td>
+    <td>#(user.lastName)</td>
+    <td>#(user.email)</td>
+  </tr>
+#endfor

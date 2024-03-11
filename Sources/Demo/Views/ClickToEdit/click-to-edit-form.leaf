@@ -1,0 +1,17 @@
+<form hx-put="/contact/1" hx-target="this" hx-swap="outerHTML">
+  <div>
+    <label>First Name</label>
+    <input type="text" name="firstName" value="#(in.contact.firstName)">
+  </div>
+  <div class="form-group">
+    <label>Last Name</label>
+    <input type="text" name="lastName" value="#(in.contact.lastName)">
+  </div>
+  <div class="form-group">
+    <label>Email Address</label>
+    <input type="email" name="email" value="#(in.contact.email)">
+  </div>
+  <button class="btn">Submit</button>
+  <button class="btn" hx-get="/contact/1">Cancel</button>
+  <div><span style="color:red;">#(in.feedback)</span></div>
+</form>

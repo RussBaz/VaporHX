@@ -1,0 +1,6 @@
+<h3> HTMX Examples </h3>
+#for(example in examples):
+<div style="margin-bottom: 0.5em;">
+  <a href="/#(example.url)" >#(example.title)</a>
+</div>
+#endfor

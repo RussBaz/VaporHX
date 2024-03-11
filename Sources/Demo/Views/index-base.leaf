@@ -1,0 +1,34 @@
+<html>
+  <head>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <style>
+        #toast.htmx-settling {
+            opacity: 100;
+        }
+
+        #toast {
+            background: #E1F0DA;
+            opacity: 0;
+            transition: opacity 3s ease-out;
+        }
+        
+        tr.htmx-swapping td {
+          opacity: 0;
+          transition: opacity 1s ease-out;
+        }
+        
+        .htmx-settling img {
+          opacity: 0;
+        }
+        img {
+         transition: opacity 300ms ease-in;
+        }
+    </style>
+  </head>
+  <body>
+    <center>
+    #import("body")
+    </center>
+  </body>
+</html>
+

@@ -1,0 +1,24 @@
+<table>
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Status</th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody hx-confirm="Are you sure?" hx-target="closest tr" hx-swap="outerHTML swap:1s">
+  #for(user in users):
+    <tr>
+      <td>#(user.name)</td>
+      <td>#(user.email)</td>
+      <td>#(user.status)</td>
+      <td>
+        <button class="btn btn-danger" hx-delete="/deleteRow/#(user.id)">
+          Delete
+        </button>
+      </td>
+    </tr>
+  #endfor
+  </tbody>
+</table>
