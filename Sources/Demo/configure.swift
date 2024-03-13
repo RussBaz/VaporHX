@@ -1,11 +1,11 @@
-import VHX
 import LeafKit
 import Vapor
+import VHX
 
 // configures your application
 public func configure(_ app: Application) async throws {
     // uncomment to serve files from /Public folder
-    
+
     let pathToPublic = URL(fileURLWithPath: #filePath).deletingLastPathComponent().appendingPathComponent("Public").relativePath
     app.middleware.use(FileMiddleware(publicDirectory: pathToPublic))
 
@@ -15,7 +15,7 @@ public func configure(_ app: Application) async throws {
                      limits: .default,
                      sandboxDirectory: pathToViews,
                      viewDirectory: pathToViews))
-    
+
     app.views.use(.leaf)
 
     let hxConfig = HtmxConfiguration.basic()

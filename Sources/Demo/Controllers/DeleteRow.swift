@@ -3,49 +3,50 @@ import Vapor
 struct DeleteRowController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         let deleteRow = routes.grouped("deleteRow")
-        
+
         deleteRow.get { req async throws in
-            return try await req.htmx.render("DeleteRow/delete-row", ["users": req.application.deleteRow.users])
+            try await req.htmx.render("DeleteRow/delete-row", ["users": req.application.deleteRow.users])
         }
-        
+
         deleteRow.delete(":id") { req async throws in
             // Ensure we have a valid user ID
             guard let idString = req.parameters.get("id"), let id = UUID(uuidString: idString) else { return HTTPStatus.notFound }
             var users = req.application.deleteRow.users
-            
+
             if let match = users.firstIndex(where: { $0.id == id }) {
                 users.remove(at: match)
                 req.application.deleteRow = DeleteRow(users: users)
                 return HTTPStatus.ok
             }
-            
+
             return HTTPStatus.notFound
         }
     }
 }
 
 /// - Warning: Don't do this in production!
-struct DeleteRow:Content {
+struct DeleteRow: Content {
     struct Key: StorageKey {
         typealias Value = DeleteRow
     }
-    struct User:Content {
-        let id:UUID
-        let name:String
-        let email:String
-        let status:String
-        
+
+    struct User: Content {
+        let id: UUID
+        let name: String
+        let email: String
+        let status: String
+
         init(name: String, email: String, status: String) {
-            self.id = UUID()
+            id = UUID()
             self.name = name
             self.email = email
             self.status = status
         }
     }
-    
-    var users:[User]
-    
-    static var `default`:DeleteRow = .init(users: [
+
+    var users: [User]
+
+    static var `default`: DeleteRow = .init(users: [
         .init(name: "Joe Smith", email: "joe@smith.org", status: "Active"),
         .init(name: "Angie MacDowell", email: "angie@macdowell.org", status: "Active"),
         .init(name: "Fuqua Tarkenton", email: "fuqua@terkenton.org", status: "Active"),
@@ -56,10 +57,10 @@ struct DeleteRow:Content {
 extension Application {
     var deleteRow: DeleteRow {
         get {
-            self.storage[DeleteRow.Key.self] ?? DeleteRow.default
+            storage[DeleteRow.Key.self] ?? DeleteRow.default
         }
         set {
-            self.storage[DeleteRow.Key.self] = newValue
+            storage[DeleteRow.Key.self] = newValue
         }
     }
 }

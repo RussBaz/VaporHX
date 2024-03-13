@@ -2,8 +2,8 @@ import Vapor
 
 struct InfiniteScrollController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
-        let infiniteScroll  = routes.grouped("infinite")
-        
+        let infiniteScroll = routes.grouped("infinite")
+
         infiniteScroll.get { req async throws in
             // Extract the `page` param from the URL if one is present, otherwise default to the first page
             let nextPage = extractNextPage(req: req)?.page ?? 1
@@ -22,17 +22,17 @@ struct InfiniteScrollController: RouteCollection {
             }
         }
     }
-    
+
     /// Extracts the `page` param from the URL if one is present
-    private func extractNextPage(req:Request) -> Payload.NextPage? {
-        return try? req.query.decode(Payload.NextPage.self)
+    private func extractNextPage(req: Request) -> Payload.NextPage? {
+        try? req.query.decode(Payload.NextPage.self)
     }
-    
+
     /// Just generates the next ten Agents starting at the specified Page
     func generateAgents(page: Int) -> Payload {
         let startIndex = page * 20
         return Payload(
-            agents: (0...18).map {
+            agents: (0 ... 18).map {
                 .init(
                     name: "Agent Smith",
                     email: "void\(startIndex + $0)@null.org",
@@ -48,19 +48,19 @@ struct InfiniteScrollController: RouteCollection {
         )
     }
 
-    struct Payload:Content {
-        struct NextPage:Content {
-            let page:Int
+    struct Payload: Content {
+        struct NextPage: Content {
+            let page: Int
         }
-        
-        struct Agent:Content {
-            let name:String
-            let email:String
-            var id:String
+
+        struct Agent: Content {
+            let name: String
+            let email: String
+            var id: String
         }
-        
-        let agents:[Agent]
-        let lastAgent:Agent
+
+        let agents: [Agent]
+        let lastAgent: Agent
         let nextPage: Int
     }
 }

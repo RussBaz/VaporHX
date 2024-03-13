@@ -100,7 +100,7 @@ public func configure(_ app: Application) async throws {
     -   [HXAsyncCommand](#htmx)
     -   [staticRoute Helper](#htmx)
 -   [Changelog](#htmx)
--   [Demo](#demo)
+-   [HTMX Demo](#htmxleaf-demo)
 
 ## What is HTMX?
 
@@ -126,7 +126,7 @@ SPM installation:
 -   Add the package to your package dependencies
 
 ```swift
-.package(url: "https://github.com/RussBaz/VaporHX.git", from: "0.0.21"),
+.package(url: "https://github.com/RussBaz/VaporHX.git", from: "0.0.22"),
 ```
 
 -   Then add it to your target dependencies
@@ -454,17 +454,25 @@ app.get("redirect") { req in
 
 To be continued...
 
-## Demo
-This package comes bundled with a Demo that you can run locally. It consists of a few examples from the [HTMX.org](https://htmx.org/examples/) website
+## HTMX+Leaf Demo
+
+For those new to HTMX, this package comes bundled with an HTMX Demo that you can run locally. It consists of a few examples from the [HTMX.org](https://htmx.org/examples/) website.
+
+This is a showcase of some HTMX features built with the Leaf templating engine and VaporHX. It is not a showcase of all the capabilities of this library, but a good introduction to HTMX. It is also not a production ready example.
 
 #### To run the demo using Xcode
-- Open this project in Xcode
-- Switch the scheme from `VHX` to `Demo` (left hand side of the top url bar)
-- Press the play / run button
-- Then head to `http://localhost:8080` 
+
+-   Open this project in Xcode
+-   Switch the scheme from `VHX` to `Demo` (left hand side of the top url bar)
+-   Confirm that the correct Run Target is selected (likely 'My Mac')
+-   Set the custom working directory in the scheme editor to the root folder of this package as shown in the [Vapor docs](https://docs.vapor.codes/getting-started/xcode/). Otherwise, it will display a warning in the console and it will be unable to find leaf templates.
+-   Press the play / run button
+-   Then head to `http://localhost:8080`
 
 #### To run the demo using the command line
-- execute the following from the VaporHX projects root dir
-``` bash
-swift run Demo 
+
+-   execute the following from the VaporHX projects root dir
+
+```bash
+swift run Demo
 ```

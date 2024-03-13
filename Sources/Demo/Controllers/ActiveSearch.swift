@@ -3,15 +3,15 @@ import Vapor
 struct ActiveSearchController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         let activeSearch = routes.grouped("activeSearch")
-        
+
         activeSearch.get { req async throws in
-            return try await req.htmx.render("ActiveSearch/active-search")
+            try await req.htmx.render("ActiveSearch/active-search")
         }
-        
+
         activeSearch.post { req async throws in
-            var ranks:[(Int, ActiveSearch.User)] = []
-            
-            if let query = try? req.content.decode(ActiveSearch.Query.self), !query.search.isEmpty  {
+            var ranks: [(Int, ActiveSearch.User)] = []
+
+            if let query = try? req.content.decode(ActiveSearch.Query.self), !query.search.isEmpty {
                 req.logger.info("Query: `\(query.search)`")
                 // Search the mockUsers for similarities
                 ranks.append(contentsOf:
@@ -27,35 +27,35 @@ struct ActiveSearchController: RouteCollection {
                     r1.0 < r2.0
                 }
                 ranks = Array(ranks.uniqued(on: { $0.1 }).prefix(10))
-                
+
             } else {
                 req.logger.warning("No Query")
             }
-            
-            return try await req.htmx.render("ActiveSearch/active-search-rows", ["users": ranks.map { $0.1 }])
+
+            return try await req.htmx.render("ActiveSearch/active-search-rows", ["users": ranks.map(\.1)])
         }
     }
 }
 
 /// - Warning: Don't do this in production!
-struct ActiveSearch:Content {
-    struct Query:Content {
-        let search:String
+struct ActiveSearch: Content {
+    struct Query: Content {
+        let search: String
     }
-    
-    struct User:Content, Hashable {
-        let firstName:String
-        let lastName:String
-        let email:String
-        
-        var toString:String {
+
+    struct User: Content, Hashable {
+        let firstName: String
+        let lastName: String
+        let email: String
+
+        var toString: String {
             "\(firstName) \(lastName) \(email)"
         }
     }
-    
-    var users:[User]
-    
-    static var `default`:ActiveSearch = .init(users: [
+
+    var users: [User]
+
+    static var `default`: ActiveSearch = .init(users: [
         .init(firstName: "Venus", lastName: "Grimes", email: "lectus.rutrum@Duisa.edu"),
         .init(firstName: "Fletcher", lastName: "Owen", email: "metus@Aenean.org"),
         .init(firstName: "William", lastName: "Hale", email: "eu.dolor@risusodio.edu"),
@@ -178,71 +178,70 @@ extension String {
  * Usage: levenstein <string> <string>
  *
  * Inspired by https://gist.github.com/kyro38/50102a47937e9896e4f4
+ * Comment by RussBaz: The link to the gist is broken. Remove or replace?
  */
 
-fileprivate class Tools {
-    
+private class Tools {
     private class func min(numbers: Int...) -> Int {
-        return numbers.reduce(numbers[0]) {$0 < $1 ? $0 : $1}
+        numbers.reduce(numbers[0]) { $0 < $1 ? $0 : $1 }
     }
-    
+
     class Array2D {
-        var cols:Int, rows:Int
+        var cols: Int, rows: Int
         var matrix: [Int]
-        
-        
-        init(cols:Int, rows:Int) {
+
+        init(cols: Int, rows: Int) {
             self.cols = cols
             self.rows = rows
-            matrix = Array(repeating:0, count:cols*rows)
+            matrix = Array(repeating: 0, count: cols * rows)
         }
-        
-        subscript(col:Int, row:Int) -> Int {
+
+        subscript(col: Int, row: Int) -> Int {
             get {
-                return matrix[cols * row + col]
+                matrix[cols * row + col]
             }
             set {
-                matrix[cols*row+col] = newValue
+                matrix[cols * row + col] = newValue
             }
         }
-        
+
         func colCount() -> Int {
-            return self.cols
+            cols
         }
-        
+
         func rowCount() -> Int {
-            return self.rows
+            rows
         }
     }
-    
+
     class func levenshtein(aStr: String, bStr: String) -> Int {
         let a = Array(aStr.utf16)
         let b = Array(bStr.utf16)
-        
+
         let dist = Array2D(cols: a.count + 1, rows: b.count + 1)
-        
-        for i in 1...a.count {
+
+        for i in 1 ... a.count {
             dist[i, 0] = i
         }
-        
-        for j in 1...b.count {
+
+        for j in 1 ... b.count {
             dist[0, j] = j
         }
-        
-        for i in 1...a.count {
-            for j in 1...b.count {
-                if a[i-1] == b[j-1] {
-                    dist[i, j] = dist[i-1, j-1]  // noop
+
+        for i in 1 ... a.count {
+            for j in 1 ... b.count {
+                if a[i - 1] == b[j - 1] {
+                    dist[i, j] = dist[i - 1, j - 1] // noop
                 } else {
                     dist[i, j] = min(
-                        numbers: dist[i-1, j] + 1,  // deletion
-                        dist[i, j-1] + 1,  // insertion
-                        dist[i-1, j-1] + 1  // substitution
+                        numbers: dist[i - 1, j] + 1, // deletion
+                        dist[i, j - 1] + 1, // insertion
+                        dist[i - 1, j - 1] + 1 // substitution
                     )
                 }
             }
         }
-        
+
         return dist[a.count, b.count]
     }
 }

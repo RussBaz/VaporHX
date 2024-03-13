@@ -46,6 +46,10 @@ let package = Package(
                 .target(name: "VHX"),
                 .product(name: "Leaf", package: "leaf"),
                 .product(name: "Vapor", package: "vapor"),
+            ],
+            resources: [
+                .copy("Views"),
+                .copy("Public")
             ]
         ),
     ]

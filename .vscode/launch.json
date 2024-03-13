@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": ["swift"],
+            "args": [],
+            "cwd": "${workspaceFolder:VHX}",
+            "name": "Debug Demo",
+            "program": "${workspaceFolder:VHX}/.build/debug/Demo",
+            "preLaunchTask": "swift: Build Debug Demo"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": ["swift"],
+            "args": [],
+            "cwd": "${workspaceFolder:VHX}",
+            "name": "Release Demo",
+            "program": "${workspaceFolder:VHX}/.build/release/Demo",
+            "preLaunchTask": "swift: Build Release Demo"
+        }
+    ]
+}
