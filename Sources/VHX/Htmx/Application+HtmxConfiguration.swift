@@ -7,13 +7,19 @@ public extension Application {
 
     var htmx: HtmxConfiguration {
         get {
-            storage[HtmxStorageKey.self] ?? HtmxConfiguration()
+            if let config = storage[HtmxStorageKey.self] {
+                return config
+            } else {
+                let config = HtmxConfiguration()
+                storage[HtmxStorageKey.self] = config
+                return config
+            }
         }
         set {
             if storage[HtmxStorageKey.self] == nil {
                 storage[HtmxStorageKey.self] = newValue
             } else {
-                fatalError("Rediclaration of HTMX configuraion")
+                fatalError("Redeclaration of HTMX configuraion")
             }
         }
     }

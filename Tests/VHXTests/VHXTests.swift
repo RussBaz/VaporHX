@@ -73,6 +73,12 @@ final class VHXTests: XCTestCase {
             return hero.hx(template: SomeTemplateable.self)
         }
 
+        app.get("header") { req async throws in
+            req.htmx.response.headers.retarget = HXRetargetHeader("#content")
+            req.htmx.response.headers.reselect = HXReselectHeader("body")
+            return try await req.htmx.render("world", headers: [HXRefreshHeader(), HXReselectHeader("form")])
+        }
+
         try app.testable().test(.GET, "hello") { res in
             XCTAssertEqual(res.status, .ok)
             XCTAssertEqual(res.body.string, "world")
@@ -169,6 +175,23 @@ final class VHXTests: XCTestCase {
         } afterResponse: { res in
             XCTAssertEqual(res.status, .ok)
             XCTAssertEqual(res.body.string, "Empty. Page: false.")
+        }
+
+        try app.testable().test(.GET, "header") { req in
+            req.headers.replaceOrAdd(name: .accept, value: HTTPMediaType.html.serialize())
+            req.headers.replaceOrAdd(name: "HX-Request", value: "true")
+        } afterResponse: { res in
+            XCTAssertEqual(res.status, .ok)
+            XCTAssertEqual(res.body.string, "<p>World!</p>\n")
+            XCTAssertTrue(res.headers.contains(name: "HX-Refresh"))
+            XCTAssertTrue(res.headers.contains(name: "HX-Retarget"))
+            XCTAssertTrue(res.headers.contains(name: "HX-Reselect"))
+            XCTAssertEqual(res.headers["HX-Refresh"].count, 1)
+            XCTAssertEqual(res.headers["HX-Retarget"].count, 1)
+            XCTAssertEqual(res.headers["HX-Reselect"].count, 1)
+            XCTAssertEqual(res.headers["HX-Refresh"].first, "true")
+            XCTAssertEqual(res.headers["HX-Retarget"].first, "#content")
+            XCTAssertEqual(res.headers["HX-Reselect"].first, "form")
         }
     }
 }

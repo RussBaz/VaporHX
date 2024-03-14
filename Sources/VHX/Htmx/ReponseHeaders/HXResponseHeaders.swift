@@ -27,6 +27,20 @@ public struct HXResponseHeaders: HXResponseHeaderAddable {
         triggerAfterSwap.map { $0.add(to: resp) }
     }
 
+    mutating func merge(with headers: HXResponseHeaders) {
+        location = location ?? headers.location
+        pushUrl = pushUrl ?? headers.pushUrl
+        redirect = redirect ?? headers.redirect
+        refresh = refresh ?? headers.refresh
+        replaceUrl = replaceUrl ?? headers.replaceUrl
+        reselect = reselect ?? headers.reselect
+        reswap = reswap ?? headers.reswap
+        retarget = retarget ?? headers.retarget
+        trigger = trigger ?? headers.trigger
+        triggerAfterSettle = triggerAfterSettle ?? headers.triggerAfterSettle
+        triggerAfterSwap = triggerAfterSwap ?? headers.triggerAfterSwap
+    }
+
     public init(location: HXLocationHeader? = nil, pushUrl: HXPushUrlHeader? = nil, redirect: HXRedirectHeader? = nil, refresh: HXRefreshHeader? = nil, replaceUrl: HXReplaceUrlHeader? = nil, reselect: HXReselectHeader? = nil, reswap: HXReswapHeader? = nil, retarget: HXRetargetHeader? = nil, trigger: HXTriggerHeader? = nil, triggerAfterSettle: HXTriggerAfterSettleHeader? = nil, triggerAfterSwap: HXTriggerAfterSwapHeader? = nil) {
         self.location = location
         self.pushUrl = pushUrl

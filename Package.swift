@@ -49,7 +49,7 @@ let package = Package(
             ],
             resources: [
                 .copy("Views"),
-                .copy("Public")
+                .copy("Public"),
             ]
         ),
     ]
