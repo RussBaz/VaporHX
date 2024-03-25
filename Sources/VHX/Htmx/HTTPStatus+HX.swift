@@ -12,6 +12,10 @@ public extension HTTPStatus {
     func hx<T: HXTemplateable>(template: T.Type, page: Bool? = nil, headers: HXResponseHeaders? = nil) -> HX<HTTPStatusContext> where T.Context == HTTPStatusContext {
         .init(context: HTTPStatusContext(status: self), template: template, page: page, htmxHeaders: headers)
     }
+
+    func hx<T: HXTemplateable>(template: T.Type, page: Bool? = nil, headers: HXResponseHeaders? = nil) -> HX<EmptyContext> where T.Context == EmptyContext {
+        .init(context: EmptyContext(), template: template, page: page, htmxHeaders: headers)
+    }
 }
 
 extension HTTPStatus.HTTPStatusContext: Encodable {}
