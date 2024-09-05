@@ -26,32 +26,37 @@ public struct HXRedirect {
 
 extension HXRedirect: AsyncResponseEncodable {
     public func encodeResponse(for request: Request) async throws -> Response {
-        switch htmxKind {
-        case .redirect:
-            if reloadAfterSwap {
-                request.redirect(to: location, redirectType: htmlKind)
-                    .add(headers: HXRefreshHeader())
-            } else {
-                request.redirect(to: location, redirectType: htmlKind)
+        let response: Response
+
+        if request.htmx.prefers == .htmx {
+            response = try await HTTPStatus.noContent.encodeResponse(for: request)
+                .add(headers: HXLocationHeader(location))
+
+            switch htmxKind {
+            case .redirect:
+                if reloadAfterSwap {
+                    response.add(headers: HXRefreshHeader())
+                }
+            case .redirectAndPush:
+                if reloadAfterSwap {
+                    response.add(headers: HXRedirectHeader(location))
+                } else {
+                    response.add(headers: HXPushUrlHeader(location))
+                }
+            case .redirectAndReplace:
+                if reloadAfterSwap {
+                    response
+                        .add(headers: HXReplaceUrlHeader(location))
+                        .add(headers: HXRefreshHeader())
+                } else {
+                    response.add(headers: HXReplaceUrlHeader(location))
+                }
             }
-        case .redirectAndPush:
-            if reloadAfterSwap {
-                request.redirect(to: location, redirectType: htmlKind)
-                    .add(headers: HXRedirectHeader(location))
-            } else {
-                request.redirect(to: location, redirectType: htmlKind)
-                    .add(headers: HXPushUrlHeader(location))
-            }
-        case .redirectAndReplace:
-            if reloadAfterSwap {
-                request.redirect(to: location, redirectType: htmlKind)
-                    .add(headers: HXReplaceUrlHeader(location))
-                    .add(headers: HXRefreshHeader())
-            } else {
-                request.redirect(to: location, redirectType: htmlKind)
-                    .add(headers: HXReplaceUrlHeader(location))
-            }
+        } else {
+            response = request.redirect(to: location, redirectType: htmlKind)
         }
+
+        return response
     }
 }
 

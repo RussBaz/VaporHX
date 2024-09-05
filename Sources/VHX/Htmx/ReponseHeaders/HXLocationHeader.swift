@@ -8,7 +8,7 @@ public struct HXLocationHeader: HXResponseHeaderAddable {
 
     public struct HXCustomLocation: Encodable {
         public let path: String
-        public let target: String
+        public let target: String?
         public let source: String?
         public let event: String?
         public let handler: String?
@@ -52,11 +52,11 @@ public extension HXLocationHeader {
         location = .simple(path)
     }
 
-    init(_ path: String, target: String = "body", source: String? = nil, event: String? = nil, handler: String? = nil, swap: HXReswapHeader? = nil, values: [String]? = nil, headers: [String: String]? = nil) {
+    init(_ path: String, target: String? = nil, source: String? = nil, event: String? = nil, handler: String? = nil, swap: HXReswapHeader? = nil, values: [String]? = nil, headers: [String: String]? = nil) {
         location = .custom(.init(path: path, target: target, source: source, event: event, handler: handler, swap: swap, values: values, headers: headers))
     }
 
-    func setTarget(_ newTarget: String) -> Self {
+    func set(target newTarget: String) -> Self {
         switch location {
         case let .simple(path):
             .init(path, target: newTarget)
@@ -65,11 +65,11 @@ public extension HXLocationHeader {
         }
     }
 
-    func setSource(_ newSource: String?) -> Self {
+    func set(source newSource: String?) -> Self {
         switch location {
         case let .simple(path):
             if let newSource {
-                .init(path, target: "body", source: newSource)
+                .init(path, source: newSource)
             } else {
                 self
             }
@@ -79,11 +79,11 @@ public extension HXLocationHeader {
         }
     }
 
-    func setEvent(_ newEvent: String?) -> Self {
+    func set(event newEvent: String?) -> Self {
         switch location {
         case let .simple(path):
             if let newEvent {
-                .init(path, target: "body", event: newEvent)
+                .init(path, event: newEvent)
             } else {
                 self
             }
@@ -92,11 +92,11 @@ public extension HXLocationHeader {
         }
     }
 
-    func setHandler(_ newHandler: String?) -> Self {
+    func set(handler newHandler: String?) -> Self {
         switch location {
         case let .simple(path):
             if let newHandler {
-                .init(path, target: "body", handler: newHandler)
+                .init(path, handler: newHandler)
             } else {
                 self
             }
@@ -105,11 +105,11 @@ public extension HXLocationHeader {
         }
     }
 
-    func setSwap(_ newSwap: HXReswapHeader?) -> Self {
+    func set(swap newSwap: HXReswapHeader?) -> Self {
         switch location {
         case let .simple(path):
             if let newSwap {
-                .init(path, target: "body", swap: newSwap)
+                .init(path, swap: newSwap)
             } else {
                 self
             }
@@ -118,11 +118,11 @@ public extension HXLocationHeader {
         }
     }
 
-    func setValues(_ newValues: [String]?) -> Self {
+    func set(values newValues: [String]?) -> Self {
         switch location {
         case let .simple(path):
             if let newValues {
-                .init(path, target: "body", values: newValues)
+                .init(path, values: newValues)
             } else {
                 self
             }
@@ -131,11 +131,11 @@ public extension HXLocationHeader {
         }
     }
 
-    func setHeaders(_ newHeaders: [String: String]?) -> Self {
+    func set(headers newHeaders: [String: String]?) -> Self {
         switch location {
         case let .simple(path):
             if let newHeaders {
-                .init(path, target: "body", headers: newHeaders)
+                .init(path, headers: newHeaders)
             } else {
                 self
             }
@@ -144,7 +144,7 @@ public extension HXLocationHeader {
         }
     }
 
-    func setSimple(_ path: String? = nil) -> Self {
+    func makeSimple(_ path: String? = nil) -> Self {
         if let path {
             .init(path)
         } else {

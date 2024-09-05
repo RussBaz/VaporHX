@@ -58,6 +58,10 @@ final class VHXTests: XCTestCase {
             try await req.htmx.autoRedirectBack(from: "/ok", htmx: .redirectAndPush, html: .temporary)
         }
 
+        app.post("redirect", "form", "success") { _ in
+            HXRedirect(to: "/hello", htmx: .redirectAndReplace)
+        }
+
         app.get("view", use: staticRoute(template: "test-view"))
 
         app.get("view", "override", "template") { req in
@@ -106,12 +110,34 @@ final class VHXTests: XCTestCase {
             XCTAssertEqual(res.headers["R"].first, "true")
         }
 
+        try app.testable().test(.POST, "redirect/back/") { res in
+            XCTAssertEqual(res.status, .temporaryRedirect)
+            XCTAssertEqual(res.headers[.location].first, "/ok?next=/redirect/back/")
+            XCTAssertNil(res.headers["HX-Push-Url"].first)
+        }
+
         try app.testable().test(.POST, "redirect/back/") { req in
             req.headers.replaceOrAdd(name: .accept, value: HTTPMediaType.html.serialize())
             req.headers.replaceOrAdd(name: "HX-Request", value: "true")
         } afterResponse: { res in
-            XCTAssertEqual(res.status, .temporaryRedirect)
+            XCTAssertEqual(res.status, .noContent)
+            XCTAssertNil(res.headers[.location].first)
             XCTAssertEqual(res.headers["HX-Push-Url"].first, "/ok?next=/redirect/back/")
+        }
+
+        try app.testable().test(.POST, "redirect/form/success") { res in
+            XCTAssertEqual(res.status, .seeOther)
+            XCTAssertEqual(res.headers[.location].first, "/hello")
+            XCTAssertNil(res.headers["HX-Replace-Url"].first)
+        }
+
+        try app.testable().test(.POST, "redirect/form/success") { req in
+            req.headers.replaceOrAdd(name: .accept, value: HTTPMediaType.html.serialize())
+            req.headers.replaceOrAdd(name: "HX-Request", value: "true")
+        } afterResponse: { res in
+            XCTAssertEqual(res.status, .noContent)
+            XCTAssertNil(res.headers[.location].first)
+            XCTAssertEqual(res.headers["HX-Replace-Url"].first, "/hello")
         }
 
         try app.testable().test(.GET, "view") { res in

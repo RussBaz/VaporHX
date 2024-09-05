@@ -67,40 +67,39 @@ public func configure(_ app: Application) async throws {
 
 ## Table of Contents
 
-- [What is HTMX?](#what-is-htmx)
-- [HTMX](#htmx)
-  - [Installation](#installation)
-  - [Configuration](#configuration)
-  - [HX Request Extensions](#hx-request-extensions)
-  - [HX Extension Method and HX\<MyType\>](#hx-extension-method-and-hxmytype)
-  - [HX Templateable and Custom Templating Engines](#hx-templateable-and-custom-templating-engines)
-  - [Request Headers](#request-headers)
-  - [Response Headers](#response-headers)
-    - [Overview](#overview)
-    - [Location](#location)
-    - [Push Url](#htmx)
-    - [Redirect](#htmx)
-    - [Refresh](#htmx)
-    - [Replace Url](#htmx)
-    - [Reselect](#htmx)
-    - [Reswap](#htmx)
-    - [Retarget](#htmx)
-    - [Trigger, Trigger After Settle and Trigger After Swap](#htmx)
-  - [HXError, Abort and HXErrorMiddleware](#htmx)
-  - [HXRedirect](#htmx)
-- [Simple Localisation](#htmx)
-  - [Configuration](#htmx)
-  - [HXLocalisable Protocol and HXLocalisation](#htmx)
-  - [HXRequestLocalisation](#htmx)
-  - [Custom HXTextTag Leaf Tag](#htmx)
-- [Other Utilities](#htmx)
-  - [String + View](#htmx)
-  - [Date + Custom Interval](#htmx)
-  - [Request + Base Url](#htmx)
-  - [HXAsyncCommand](#htmx)
-  - [staticRoute Helper](#htmx)
-- [Changelog](#htmx)
-- [HTMX Demo](#htmxleaf-demo)
+-   [What is HTMX?](#what-is-htmx)
+-   [HTMX](#htmx)
+    -   [Installation](#installation)
+    -   [Configuration](#configuration)
+    -   [HX Request Extensions](#hx-request-extensions)
+    -   [HX Extension Method and HX\<MyType\>](#hx-extension-method-and-hxmytype)
+    -   [HX Templateable and Custom Templating Engines](#hx-templateable-and-custom-templating-engines)
+    -   [Request Headers](#request-headers)
+    -   [Response Headers](#response-headers)
+        -   [Overview](#overview)
+        -   [Location](#location)
+        -   [Push Url](#push-url)
+        -   [Redirect](#htmx)
+        -   [Refresh](#htmx)
+        -   [Replace Url](#htmx)
+        -   [Reselect](#htmx)
+        -   [Reswap](#htmx)
+        -   [Retarget](#htmx)
+        -   [Trigger, Trigger After Settle and Trigger After Swap](#htmx)
+    -   [HXError, Abort and HXErrorMiddleware](#htmx)
+    -   [HXRedirect](#htmx)
+-   [Simple Localisation](#htmx)
+    -   [Configuration](#htmx)
+    -   [HXLocalisable Protocol and HXLocalisation](#htmx)
+    -   [HXRequestLocalisation](#htmx)
+    -   [Custom HXTextTag Leaf Tag](#htmx)
+-   [Other Utilities](#htmx)
+    -   [String + View](#htmx)
+    -   [Date + Custom Interval](#htmx)
+    -   [Request + Base Url](#htmx)
+    -   [staticRoute Helper](#htmx)
+-   [Changelog](#htmx)
+-   [HTMX Demo](#htmxleaf-demo)
 
 ## What is HTMX?
 
@@ -108,10 +107,10 @@ Here is my hot take: Make your backend code the single source of truth for your 
 
 And here is the official intro:
 
-> - Why should only `<a>` and `<form>` be able to make HTTP requests?
-> - Why should only `click` & `submit` events trigger them?
-> - Why should only `GET` & `POST` methods be available?
-> - Why should you only be able to replace the **_entire_** screen?
+> -   Why should only `<a>` and `<form>` be able to make HTTP requests?
+> -   Why should only `click` & `submit` events trigger them?
+> -   Why should only `GET` & `POST` methods be available?
+> -   Why should you only be able to replace the **_entire_** screen?
 >
 > By removing these **_arbitrary constraints_**, htmx completes HTML as a **_hypertext_**.
 
@@ -123,13 +122,13 @@ Lastly, here is a quick introduction to HTMX by `Fireship`: [htmx in 100 seconds
 
 SPM installation:
 
-- Add the package to your package dependencies
+-   Add the package to your package dependencies
 
 ```swift
-.package(url: "https://github.com/RussBaz/VaporHX.git", from: "0.0.24"),
+.package(url: "https://github.com/RussBaz/VaporHX.git", from: "0.0.25"),
 ```
 
-- Then add it to your target dependencies
+-   Then add it to your target dependencies
 
 ```swift
 .product(name: "VHX", package: "VaporHX"),
@@ -458,7 +457,45 @@ app.get("redirect") { req in
 
 #### Location
 
-`HXLocationHeader` is type safe constructor for a `HX-Location` response header. It is the most complicated response header in this library but it is thankfully a rarely used one.
+`HXLocationHeader` is type safe constructor for a `HX-Location` response header. It is the most complicated response header in my opinion.
+
+```swift
+struct HXLocationHeader {
+  let location: HXLocationType
+}
+
+enum HXLocationType {
+  case simple(String) // Header value is just a string
+  case custom(HXCustomLocation) // Header value is json
+}
+
+struct HXCustomLocation: Encodable {
+  let path: String
+  let target: String?
+  let source: String?
+  let event: String?
+  let handler: String?
+  let swap: HXReswapHeader?
+  let values: [String]?
+  let headers: [String: String]?
+}
+```
+
+Because of the sheer volume of possible options, there is a 'fluent' api to generate a new header struct with updated property values, such as:
+
+```swift
+func set(target newTarget: String) -> Self
+func set(source newSource: String?) -> Self
+func set(event newEvent: String?) -> Self
+func set(handler newHandler: String?) -> Self
+func set(swap newSwap: HXReswapHeader?) -> Self
+func set(values newValues: [String]?) -> Self
+func set(headers newHeaders: [String: String]?) -> Self
+// Removes all other properties and sets the location property to simple
+func makeSimple(_ path: String? = nil) -> Self
+```
+
+#### Push Url
 
 To be continued...
 
@@ -470,16 +507,16 @@ This is a showcase of some HTMX features built with the Leaf templating engine a
 
 #### To run the demo using Xcode
 
-- Open this project in Xcode
-- Switch the scheme from `VHX` to `Demo` (left hand side of the top url bar)
-- Confirm that the correct Run Target is selected (likely 'My Mac')
-- Set the custom working directory in the scheme editor to the root folder of this package as shown in the [Vapor docs](https://docs.vapor.codes/getting-started/xcode/). Otherwise, it will display a warning in the console and it will be unable to find leaf templates.
-- Press the play / run button
-- Then head to `http://localhost:8080`
+-   Open this project in Xcode
+-   Switch the scheme from `VHX` to `Demo` (left hand side of the top url bar)
+-   Confirm that the correct Run Target is selected (likely 'My Mac')
+-   Set the custom working directory in the scheme editor to the root folder of this package as shown in the [Vapor docs](https://docs.vapor.codes/getting-started/xcode/). Otherwise, it will display a warning in the console and it will be unable to find leaf templates.
+-   Press the play / run button
+-   Then head to `http://localhost:8080`
 
 #### To run the demo using the command line
 
-- execute the following from the VaporHX projects root dir
+-   execute the following from the VaporHX projects root dir
 
 ```bash
 swift run Demo
