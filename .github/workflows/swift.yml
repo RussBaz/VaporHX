@@ -6,20 +6,20 @@ name: Swift
 on: [push]
 
 jobs:
-  build:
-    name: Swift ${{ matrix.swift }} on ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest]
-        swift: ["5.9"]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: swift-actions/setup-swift@v1
-        with:
-          swift-version: ${{ matrix.swift }}
-      - uses: actions/checkout@v4
-      - name: Build
-        run: swift build
-      - name: Run tests
-        run: swift test
+    build:
+        name: Swift ${{ matrix.swift }} on ${{ matrix.os }}
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [ubuntu-latest, macos-latest]
+                swift: ["5.10"]
+        runs-on: ${{ matrix.os }}
+        steps:
+            - uses: swift-actions/setup-swift@v1
+              with:
+                  swift-version: ${{ matrix.swift }}
+            - uses: actions/checkout@v4
+            - name: Build
+              run: swift build
+            - name: Run tests
+              run: swift test
