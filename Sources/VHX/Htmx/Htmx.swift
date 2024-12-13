@@ -5,7 +5,7 @@ public struct Htmx {
         case htmx, html, api
     }
 
-    let req: Request
+    public let req: Request
 
     public let response: HXResponseConfiguration
 }
