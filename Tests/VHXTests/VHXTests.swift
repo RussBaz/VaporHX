@@ -4,6 +4,11 @@ import XCTest
 import XCTVapor
 
 final class VHXTests: XCTestCase {
+    struct LocationResponseHeaderTest2: Content {
+        let path: String
+        let target: String
+    }
+
     struct Superhero: Content, Equatable {
         let name: String
         let superpower: String
@@ -81,6 +86,16 @@ final class VHXTests: XCTestCase {
             req.htmx.response.headers.retarget = HXRetargetHeader("#content")
             req.htmx.response.headers.reselect = HXReselectHeader("body")
             return try await req.htmx.render("world", headers: [HXRefreshHeader(), HXReselectHeader("form")])
+        }
+
+        app.get("header", "location", "test") { req in
+            req.htmx.response.headers.location = HXLocationHeader("/test")
+            return try await req.htmx.render("world")
+        }
+
+        app.get("header", "location", "test2") { req in
+            req.htmx.response.headers.location = HXLocationHeader("/test2", target: "#testdiv")
+            return try await req.htmx.render("world")
         }
 
         try app.testable().test(.GET, "hello") { res in
@@ -218,6 +233,38 @@ final class VHXTests: XCTestCase {
             XCTAssertEqual(res.headers["HX-Refresh"].first, "true")
             XCTAssertEqual(res.headers["HX-Retarget"].first, "#content")
             XCTAssertEqual(res.headers["HX-Reselect"].first, "form")
+        }
+
+        try app.testable().test(.GET, "header/location/test") { req in
+            req.headers.replaceOrAdd(name: .accept, value: HTTPMediaType.html.serialize())
+            req.headers.replaceOrAdd(name: "HX-Request", value: "true")
+        } afterResponse: { res in
+            XCTAssertEqual(res.status, .ok)
+            XCTAssertEqual(res.body.string, "<p>World!</p>\n")
+            XCTAssertTrue(res.headers.contains(name: "HX-Location"))
+            XCTAssertEqual(res.headers["HX-Location"].count, 1)
+            XCTAssertEqual(res.headers["HX-Location"].first, "/test")
+        }
+
+        try app.testable().test(.GET, "header/location/test2") { req in
+            req.headers.replaceOrAdd(name: .accept, value: HTTPMediaType.html.serialize())
+            req.headers.replaceOrAdd(name: "HX-Request", value: "true")
+        } afterResponse: { res in
+            XCTAssertEqual(res.status, .ok)
+            XCTAssertEqual(res.body.string, "<p>World!</p>\n")
+            XCTAssertTrue(res.headers.contains(name: "HX-Location"))
+            XCTAssertEqual(res.headers["HX-Location"].count, 1)
+            if let value = res.headers["HX-Location"].first?.data(using: .utf8) {
+                let decoder = JSONDecoder()
+                if let location = try? decoder.decode(LocationResponseHeaderTest2.self, from: value) {
+                    XCTAssertEqual(location.path, "/test2")
+                    XCTAssertEqual(location.target, "#testdiv")
+                } else {
+                    XCTFail("HX-Location value could not be decoded")
+                }
+            } else {
+                XCTFail("HX-Location value was nil")
+            }
         }
     }
 }

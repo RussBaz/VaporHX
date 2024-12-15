@@ -79,8 +79,8 @@ public func configure(_ app: Application) async throws {
         -   [Overview](#overview)
         -   [Location](#location)
         -   [Push Url](#push-url)
-        -   [Redirect](#htmx)
-        -   [Refresh](#htmx)
+        -   [Redirect](#redirect)
+        -   [Refresh](#refresh)
         -   [Replace Url](#htmx)
         -   [Reselect](#htmx)
         -   [Reswap](#htmx)
@@ -125,7 +125,7 @@ SPM installation:
 -   Add the package to your package dependencies
 
 ```swift
-.package(url: "https://github.com/RussBaz/VaporHX.git", from: "0.0.25"),
+.package(url: "https://github.com/RussBaz/VaporHX.git", from: "0.0.26"),
 ```
 
 -   Then add it to your target dependencies
@@ -457,7 +457,7 @@ app.get("redirect") { req in
 
 #### Location
 
-`HXLocationHeader` is type safe constructor for a `HX-Location` response header. It is the most complicated response header in my opinion.
+`HXLocationHeader` is a type-safe constructor for a `HX-Location` response header. It is the most complicated response header in my opinion.
 
 ```swift
 struct HXLocationHeader {
@@ -495,7 +495,52 @@ func set(headers newHeaders: [String: String]?) -> Self
 func makeSimple(_ path: String? = nil) -> Self
 ```
 
+A few examples of how to create a simple and more complicated headers:
+
+```swift
+let header1 = HXLocationHeader("/test") // reuslts in "HX-Location: /test"
+let header2 = HXLocationHeader("/test2", target: "#testdiv") // results in "HX-Location: {"path":"/test2", "target":"#testdiv"}"
+// and so on
+```
+
 #### Push Url
+
+`HXPushUrlHeader` is a type-safe constructor for a `HX-Push-Url` response header.
+
+```swift
+struct HXPushUrlHeader {
+    let url: HXPushType
+}
+
+enum HXPushType {
+    case disable
+    case enable(String) // where the string should contain the new value to be pushed onto the browser location history stack
+}
+```
+
+A few examples:
+
+```swift
+let header1 = HXPushUrlHeader(url: .disable) // results in "HX-Push-Url: false"
+let header2 = HXPushUrlHeader("/test") // results in "HX-Push-Url: /test"
+```
+
+#### Redirect
+
+`HXRedirectHeader` is a type-safe constructor for a `HX-Redirect` response header. Please do not confuse this response header with the `HXRedirect` structure.
+
+It is extremely simple:
+
+```swift
+struct HXRedirectHeader {
+    let location: String
+}
+
+// sample usage
+let header = HXRedirectHeader("/test") // results in "HX-Redirect: /test"
+```
+
+#### Refresh
 
 To be continued...
 
